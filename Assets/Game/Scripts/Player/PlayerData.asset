@@ -17,13 +17,13 @@ MonoBehaviour:
   SecondsToJumpPeak: 0.5
   SecondsToLand: 0.5
   MaxYSpeed: 24.2
-  Position: {x: 0.008, y: -1.9920002}
+  Position: {x: 22.407982, y: 18.008}
   HorizontalVelocity: 0
   GroundCheckBoxOffset: {x: 0, y: 0}
-  GroundCheckBox: {x: 1, y: 0.5}
+  GroundCheckBox: {x: 0.69, y: 0.5}
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
   IsGrounded: 1
   InitialState: 15
-  State: 27
+  State: 15
