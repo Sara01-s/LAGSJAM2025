@@ -117,6 +117,51 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sense1"",
+                    ""type"": ""Button"",
+                    ""id"": ""2a399d37-3ab3-4c9b-81ef-1ec716225bf7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sense2"",
+                    ""type"": ""Button"",
+                    ""id"": ""7102ef87-42f1-4b8f-bf52-ad366b9b1933"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sense3"",
+                    ""type"": ""Button"",
+                    ""id"": ""88537897-3439-4e0e-aafb-41a9a4fa897b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sense4"",
+                    ""type"": ""Button"",
+                    ""id"": ""f66e5be8-2a15-474b-939c-ef2ad0267178"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sense5"",
+                    ""type"": ""Button"",
+                    ""id"": ""87688ad9-573f-4d3c-87c1-bdb1bde04420"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -174,6 +219,61 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""Horizontal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4da84903-e926-4e2d-97b1-d06ce95852b4"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sense1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6202b71-c10c-463d-9177-d524da2907d3"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sense2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0db3b3eb-887f-41d6-80b8-2f2d0713059c"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sense3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""66ae63ba-b422-4e06-bbac-e1ff23a8b0c7"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sense4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c4198c9d-079e-423e-839a-7ad74f5aefbb"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sense5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +285,11 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Gameplay_Horizontal = m_Gameplay.FindAction("Horizontal", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_EscInput = m_Gameplay.FindAction("EscInput", throwIfNotFound: true);
+        m_Gameplay_Sense1 = m_Gameplay.FindAction("Sense1", throwIfNotFound: true);
+        m_Gameplay_Sense2 = m_Gameplay.FindAction("Sense2", throwIfNotFound: true);
+        m_Gameplay_Sense3 = m_Gameplay.FindAction("Sense3", throwIfNotFound: true);
+        m_Gameplay_Sense4 = m_Gameplay.FindAction("Sense4", throwIfNotFound: true);
+        m_Gameplay_Sense5 = m_Gameplay.FindAction("Sense5", throwIfNotFound: true);
     }
 
     ~@InputMap()
@@ -268,6 +373,11 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Horizontal;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_EscInput;
+    private readonly InputAction m_Gameplay_Sense1;
+    private readonly InputAction m_Gameplay_Sense2;
+    private readonly InputAction m_Gameplay_Sense3;
+    private readonly InputAction m_Gameplay_Sense4;
+    private readonly InputAction m_Gameplay_Sense5;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -291,6 +401,26 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/EscInput".
         /// </summary>
         public InputAction @EscInput => m_Wrapper.m_Gameplay_EscInput;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Sense1".
+        /// </summary>
+        public InputAction @Sense1 => m_Wrapper.m_Gameplay_Sense1;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Sense2".
+        /// </summary>
+        public InputAction @Sense2 => m_Wrapper.m_Gameplay_Sense2;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Sense3".
+        /// </summary>
+        public InputAction @Sense3 => m_Wrapper.m_Gameplay_Sense3;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Sense4".
+        /// </summary>
+        public InputAction @Sense4 => m_Wrapper.m_Gameplay_Sense4;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Sense5".
+        /// </summary>
+        public InputAction @Sense5 => m_Wrapper.m_Gameplay_Sense5;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -326,6 +456,21 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @EscInput.started += instance.OnEscInput;
             @EscInput.performed += instance.OnEscInput;
             @EscInput.canceled += instance.OnEscInput;
+            @Sense1.started += instance.OnSense1;
+            @Sense1.performed += instance.OnSense1;
+            @Sense1.canceled += instance.OnSense1;
+            @Sense2.started += instance.OnSense2;
+            @Sense2.performed += instance.OnSense2;
+            @Sense2.canceled += instance.OnSense2;
+            @Sense3.started += instance.OnSense3;
+            @Sense3.performed += instance.OnSense3;
+            @Sense3.canceled += instance.OnSense3;
+            @Sense4.started += instance.OnSense4;
+            @Sense4.performed += instance.OnSense4;
+            @Sense4.canceled += instance.OnSense4;
+            @Sense5.started += instance.OnSense5;
+            @Sense5.performed += instance.OnSense5;
+            @Sense5.canceled += instance.OnSense5;
         }
 
         /// <summary>
@@ -346,6 +491,21 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @EscInput.started -= instance.OnEscInput;
             @EscInput.performed -= instance.OnEscInput;
             @EscInput.canceled -= instance.OnEscInput;
+            @Sense1.started -= instance.OnSense1;
+            @Sense1.performed -= instance.OnSense1;
+            @Sense1.canceled -= instance.OnSense1;
+            @Sense2.started -= instance.OnSense2;
+            @Sense2.performed -= instance.OnSense2;
+            @Sense2.canceled -= instance.OnSense2;
+            @Sense3.started -= instance.OnSense3;
+            @Sense3.performed -= instance.OnSense3;
+            @Sense3.canceled -= instance.OnSense3;
+            @Sense4.started -= instance.OnSense4;
+            @Sense4.performed -= instance.OnSense4;
+            @Sense4.canceled -= instance.OnSense4;
+            @Sense5.started -= instance.OnSense5;
+            @Sense5.performed -= instance.OnSense5;
+            @Sense5.canceled -= instance.OnSense5;
         }
 
         /// <summary>
@@ -407,5 +567,40 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEscInput(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sense1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSense1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sense2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSense2(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sense3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSense3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sense4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSense4(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sense5" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSense5(InputAction.CallbackContext context);
     }
 }

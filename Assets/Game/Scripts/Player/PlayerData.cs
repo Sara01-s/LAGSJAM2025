@@ -4,13 +4,11 @@ using Vector2 = UnityEngine.Vector2;
 
 [Flags]
 public enum PlayerState {
-	None = 1 << 0,
-	Dead = 1 << 1,
-	CanSee = 1 << 2,
-	CanHear = 1 << 3,
+	CanSee = 1 << 0,
+	CanHear = 1 << 1,
+	CanSmell = 1 << 2,
+	CanTouch = 1 << 3,
 	CanTaste = 1 << 4,
-	CanTouch = 1 << 5,
-	CanSmell = 1 << 6,
 }
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData", order = 1)]
@@ -31,5 +29,6 @@ public class PlayerData : ScriptableObject {
 	public bool IsGrounded;
 
 	[Header("Player State")]
+	public PlayerState InitialState = PlayerState.CanSee | PlayerState.CanSmell | PlayerState.CanTaste | PlayerState.CanTouch | PlayerState.CanHear;
 	public PlayerState State;
 }

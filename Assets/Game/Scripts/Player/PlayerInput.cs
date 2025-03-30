@@ -33,19 +33,19 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 	}
 
 	public void OnEscInput(InputAction.CallbackContext context) {
-		if (context.phase == InputActionPhase.Started) {
+		if (context.started) {
 			_playerEvents.Input.OnEscInputPressed?.Invoke();
 			print("Escape input pressed!");
 		}
 	}
 
 	public void OnHorizontal(InputAction.CallbackContext context) {
-		if (context.phase == InputActionPhase.Performed) {
+		if (context.performed) {
 			float value = context.ReadValue<float>();
 			_playerEvents.Input.OnHorizontalHeld?.Invoke(value);
 		}
 
-		if (context.phase == InputActionPhase.Canceled) {
+		if (context.canceled) {
 			_playerEvents.Input.OnHorizontalReleased?.Invoke();
 		}
 	}
@@ -57,6 +57,36 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 
 		if (context.canceled) {
 			_playerEvents.Input.OnJumpReleased?.Invoke();
+		}
+	}
+
+	public void OnSense1(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnSightPressed?.Invoke();
+		}
+	}
+
+	public void OnSense2(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnHearingPressed?.Invoke();
+		}
+	}
+
+	public void OnSense3(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnSmellPressed?.Invoke();
+		}
+	}
+
+	public void OnSense4(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnTouchPressed?.Invoke();
+		}
+	}
+
+	public void OnSense5(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnTastePressed?.Invoke();
 		}
 	}
 }

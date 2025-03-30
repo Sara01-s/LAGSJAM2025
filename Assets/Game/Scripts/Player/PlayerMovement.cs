@@ -39,15 +39,10 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
-		if (_player.State.HasFlag(PlayerState.Dead)) {
-			_body.linearVelocity = Vector2.zero;
-			return;
-		}
-
 		float gravity = _body.linearVelocityY > 0.0f ? _jumpGravity : _fallGravity;
-		_body.linearVelocityY += gravity * Time.fixedDeltaTime;
 
 		_body.linearVelocityX = _player.HorizontalVelocity;
+		_body.linearVelocityY += gravity * Time.fixedDeltaTime;
 	}
 
 	private void StopMovement() {
@@ -59,7 +54,6 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		var clampedVelocity = clamp(velocity, -_player.Speed, _player.Speed);
 
 		_player.HorizontalVelocity = clampedVelocity;
-		print("Moviéndose.");
 	}
 
 	private void Jump() {
@@ -69,7 +63,6 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		}
 
 		_body.linearVelocityY += _jumpVelocity;
-		print($"Linear velocity Y: {_body.linearVelocityY}");
 	}
 
 }

@@ -12,10 +12,16 @@ public class PlayerEvents : ScriptableObject {
 		public Action<float> OnHorizontalHeld;
 		public Action OnHorizontalReleased;
 		public bool IsJumpInputHeld;
+		public Action OnSightPressed;
+		public Action OnSmellPressed;
+		public Action OnTastePressed;
+		public Action OnTouchPressed;
+		public Action OnHearingPressed;
 	}
 
 	public Inputs Input;
 	public Action OnPlayerLand;
 	public Action OnPlayerDeath;
 	public Action OnPlayerRespawn;
+	public Action<PlayerState> OnPlayerStateChange;
 }
