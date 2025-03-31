@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bounds
   - CameraTrigger
+  - Damage
   layers:
   - Default
   - TransparentFX

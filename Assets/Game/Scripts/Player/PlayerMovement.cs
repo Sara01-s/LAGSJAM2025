@@ -64,5 +64,10 @@ internal sealed class PlayerMovement : MonoBehaviour {
 
 		_body.linearVelocityY += _jumpVelocity;
 	}
+	public void Respawn(Vector2 vector) {
+		transform.position = vector;
+		_player.HorizontalVelocity = 0;
+		_body.linearVelocityY = 0;
 
+	}
 }

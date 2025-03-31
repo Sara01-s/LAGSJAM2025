@@ -1,11 +1,13 @@
 using System;
 using Unity.Cinemachine;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class ConfigureZone : MonoBehaviour {
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
+	public CircleCollider2D respawnPoint;
 	public Tilemap map;
 	public BoxCollider2D cameraBounds;
 	public BoxCollider2D cameraTrigger;
@@ -23,13 +25,16 @@ public class ConfigureZone : MonoBehaviour {
 	[Range(10, 50)]
 	public int groundSize = 30;
 	void Start() {
+		SetBounds();
+	}
+	private void SetBounds() {
 		map.CompressBounds();
 		Vector3Int mapBounds = map.cellBounds.size;
 		float tileSize = map.cellSize.x;
 
 		Vector2 offset = new Vector2(
-			(float)((float)(tileOffsetRight - tileOffsetLeft) / 2.0 + map.cellBounds.center.x),
-			(float)((float)(tileOffsetTop - tileOffsetBottom + skySize - groundSize) / 2.0 + map.cellBounds.center.y))
+			(float)((tileOffsetRight - tileOffsetLeft) / 2.0 + map.cellBounds.center.x),
+			(float)((tileOffsetTop - tileOffsetBottom + skySize - groundSize) / 2.0 + map.cellBounds.center.y))
 			* tileSize;
 		Vector2 size = new Vector2(
 			mapBounds.x + tileOffsetRight + tileOffsetLeft,
@@ -40,9 +45,8 @@ public class ConfigureZone : MonoBehaviour {
 		cameraTrigger.size = size - new Vector2(2, 2) * tileSize;
 		confiner.InvalidateBoundingShapeCache();
 	}
-
-	// Update is called once per frame
-	void Update() {
-
+	public Vector2 GetRespawnPoint() {
+		return respawnPoint.transform.position;
 	}
 }
+
