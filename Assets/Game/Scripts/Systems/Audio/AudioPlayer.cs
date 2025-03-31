@@ -13,7 +13,7 @@ using UnityEngine.Audio;
 public enum Mixer {
 	Master = 0,
 	Music = 1,
-	SFX = 2,
+	Sfx = 2,
 	Ambience = 3,
 }
 
@@ -32,7 +32,7 @@ public interface IAudioService {
 
 	AudioSource PlaySound(
 		string soundFileName,
-		Mixer mixer = Mixer.SFX,
+		Mixer mixer = Mixer.Sfx,
 		float volume = 1.0f,
 		float pitch = 1.0f,
 		bool loop = false,
@@ -42,7 +42,7 @@ public interface IAudioService {
 
 	AudioSource PlaySound(
 		AudioClip clip,
-		Mixer mixer = Mixer.SFX,
+		Mixer mixer = Mixer.Sfx,
 		float volume = 1.0f,
 		float pitch = 1.0f,
 		bool loop = false,
@@ -70,28 +70,32 @@ public interface IAudioService {
 #region CoroutineRunner
 
 public class CoroutineRunner : MonoBehaviour {
-	private static CoroutineRunner? _instance;
+	private static CoroutineRunner? _currentInstance;
+
 	public static CoroutineRunner Instance {
 		get {
-			if (_instance == null) {
-				var runnerGO = new GameObject("CoroutineRunner");
-				DontDestroyOnLoad(runnerGO);
-				_instance = runnerGO.AddComponent<CoroutineRunner>();
+			if (_currentInstance == null) {
+				_currentInstance = FindFirstObjectByType<CoroutineRunner>();
+				if (_currentInstance == null) {
+					var runnerGO = new GameObject("CoroutineRunner");
+					_currentInstance = runnerGO.AddComponent<CoroutineRunner>();
+				}
 			}
-			return _instance;
+			return _currentInstance;
 		}
 	}
 
 	private void OnDestroy() {
-		_instance = null;
+		if (_currentInstance == this) {
+			_currentInstance = null;
+		}
 	}
 }
 
 #endregion
 
 #region AudioStorage
-
-public class AudioStorage {
+public class AudioStorage : IDisposable {
 	public const string MasterVolume = "MasterVolume";
 	public const string MusicVolume = "MusicVolume";
 	public const string SfxVolume = "SfxVolume";
@@ -106,12 +110,14 @@ public class AudioStorage {
 	private const string AmbiencePrefix = "amb_";
 
 	public AudioMixer MasterMixer { get; private set; }
+	public Dictionary<Mixer, List<AudioSource>> Banks => _banks;
+	public Dictionary<string, AudioSource> ActiveSources => _activeSources;
 
 	private readonly Dictionary<string, AudioClip> _sfxClips = new();
 	private readonly Dictionary<string, AudioClip> _musicClips = new();
 	private readonly Dictionary<string, AudioClip> _ambienceClips = new();
-
-	public Dictionary<Mixer, List<AudioSource>> Banks { get; private set; } = new();
+	private readonly Dictionary<string, AudioSource> _activeSources = new();
+	private readonly Dictionary<Mixer, List<AudioSource>> _banks = new();
 
 	public AudioStorage() {
 		MasterMixer = Resources.Load<AudioMixer>("Art/Audio/Mixer/MasterMixer");
@@ -131,48 +137,32 @@ public class AudioStorage {
 		foreach (var clip in sfxClips) _sfxClips.Add(clip.name, clip);
 		foreach (var clip in ambienceClips) _ambienceClips.Add(clip.name, clip);
 
-		Debug.Log($"Loaded {musicClips.Length} music clips, {sfxClips.Length} SFX clips, and {ambienceClips.Length} ambience clips.");
+		CreateAudioSourceBanks();
+
+		Debug.Log($"Loaded {musicClips.Length} music clips, {sfxClips.Length} sfx clips, and {ambienceClips.Length} ambience clips.");
 		if (musicClips.Length > 0) Debug.Log("Loaded music clips: " + string.Join(", ", musicClips.Select(clip => clip.name)));
 		if (sfxClips.Length > 0) Debug.Log("Loaded SFX clips: " + string.Join(", ", sfxClips.Select(clip => clip.name)));
 		if (ambienceClips.Length > 0) Debug.Log("Loaded ambience clips: " + string.Join(", ", ambienceClips.Select(clip => clip.name)));
-
-		CreateAudioSourceBanks();
 	}
 
 	public void CreateAudioSourceBanks() {
 		var banksGO = new GameObject("AudioSourceBanks");
-		UnityEngine.Object.DontDestroyOnLoad(banksGO);
 
-		if (banksGO.GetComponent<CoroutineRunner>() == null) {
-			banksGO.AddComponent<CoroutineRunner>();
-		}
-
-		foreach (Mixer mixer in new Mixer[] { Mixer.Music, Mixer.SFX, Mixer.Ambience }) {
+		foreach (var mixer in new Mixer[] { Mixer.Music, Mixer.Sfx, Mixer.Ambience }) {
 			var bankChild = new GameObject(mixer.ToString() + "Bank");
 			bankChild.transform.parent = banksGO.transform;
 
 			var sources = new List<AudioSource>();
 			for (int i = 0; i < BanksPerChannel; i++) {
-				var sourceGO = new GameObject($"{mixer}_Source_{i}");
+				var sourceGO = new GameObject($"{mixer}_source_{i}");
 
 				sourceGO.transform.parent = bankChild.transform;
 				AudioSource audioSource = sourceGO.AddComponent<AudioSource>();
-
 				sources.Add(audioSource);
 			}
 
-			Banks.Add(mixer, sources);
+			_banks[mixer] = sources; // Usamos _banks en lugar de Banks
 		}
-	}
-
-	public void DestroyAudioSourceBanks() {
-		foreach (var bank in Banks) {
-			foreach (var source in bank.Value) {
-				UnityEngine.Object.Destroy(source.gameObject);
-			}
-		}
-
-		Banks.Clear();
 	}
 
 	public void CheckAudioClipNames(IEnumerable<(string path, string name)> audioClips) {
@@ -216,12 +206,29 @@ public class AudioStorage {
 		return mixer switch {
 			Mixer.Master => MasterMixer.FindMatchingGroups("Master")[0],
 			Mixer.Music => MasterMixer.FindMatchingGroups("Music")[0],
-			Mixer.SFX => MasterMixer.FindMatchingGroups("Sfx")[0],
+			Mixer.Sfx => MasterMixer.FindMatchingGroups("Sfx")[0],
 			Mixer.Ambience => MasterMixer.FindMatchingGroups("Ambience")[0],
 			_ => throw new NotImplementedException(),
 		};
 	}
 
+	public void Dispose() {
+		foreach (var source in _activeSources.Values) {
+			if (source != null && source.isPlaying) {
+				source.Stop();
+			}
+		}
+		_activeSources.Clear();
+
+		foreach (var bank in _banks) {
+			foreach (var source in bank.Value) {
+				if (source != null) {
+					UnityEngine.Object.Destroy(source.gameObject);
+				}
+			}
+		}
+		_banks.Clear();
+	}
 }
 #endregion
 
@@ -231,8 +238,6 @@ public class AudioPlayer : IAudioService, IDisposable {
 	public float MaxVolume => 1.0f;
 
 	private readonly AudioStorage _audioStorage = new();
-	private readonly Dictionary<string, AudioSource> _activeSources = new();
-
 	private bool _globalMute = false;
 
 	public void SetMixerVolume(Mixer mixer, float newVolume) {
@@ -249,7 +254,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 			case Mixer.Music:
 			_audioStorage.MasterMixer.SetFloat(AudioStorage.MusicVolume, dbVolume);
 			return;
-			case Mixer.SFX:
+			case Mixer.Sfx:
 			_audioStorage.MasterMixer.SetFloat(AudioStorage.SfxVolume, dbVolume);
 			return;
 			case Mixer.Ambience:
@@ -269,7 +274,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 			case Mixer.Music:
 			_audioStorage.MasterMixer.GetFloat(AudioStorage.MusicVolume, out result);
 			break;
-			case Mixer.SFX:
+			case Mixer.Sfx:
 			_audioStorage.MasterMixer.GetFloat(AudioStorage.SfxVolume, out result);
 			break;
 			case Mixer.Ambience:
@@ -284,7 +289,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 
 	public AudioSource PlaySound(
 		AudioClip clip,
-		Mixer mixer = Mixer.SFX,
+		Mixer mixer = Mixer.Sfx,
 		float volume = 1,
 		float pitch = 1,
 		bool loop = false,
@@ -297,7 +302,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 
 		if (!_audioStorage.Banks.TryGetValue(mixer, out List<AudioSource> bankSources)) {
 			_audioStorage.CreateAudioSourceBanks();
-			Debug.Log("Audio source banks created.");
+			bankSources = _audioStorage.Banks[mixer];
 		}
 
 		AudioSource source = bankSources.FirstOrDefault(s => !s.isPlaying);
@@ -312,20 +317,18 @@ public class AudioPlayer : IAudioService, IDisposable {
 		source.loop = loop;
 		source.spatialBlend = spatialBlend;
 		source.priority = priority;
-
 		source.outputAudioMixerGroup = _audioStorage.GetMixer(mixer);
 		source.mute = _globalMute;
 
 		source.Play();
-
-		_activeSources[clip.name] = source;
+		_audioStorage.ActiveSources[clip.name] = source;
 
 		return source;
 	}
 
 	public AudioSource PlaySound(
 		string soundFileName,
-		Mixer mixer = Mixer.SFX,
+		Mixer mixer = Mixer.Sfx,
 		float volume = 1,
 		float pitch = 1,
 		bool loop = false,
@@ -336,52 +339,49 @@ public class AudioPlayer : IAudioService, IDisposable {
 		if (clip == null) {
 			throw new ArgumentException($"Clip with name '{soundFileName}' was not found.", nameof(soundFileName));
 		}
-
 		return PlaySound(clip, mixer, volume, pitch, loop, spatialBlend, priority);
 	}
 
 	public bool IsSoundPlaying(string clipName) {
-		if (_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			if (source.isPlaying) {
 				return true;
 			}
 			else {
-				_activeSources.Remove(clipName);
+				_audioStorage.ActiveSources.Remove(clipName);
 			}
 		}
 		return false;
 	}
 
 	public void FadeIn(string clipName, float duration = 1f) {
-		if (!_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (!_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			Debug.LogWarning($"AudioSource not found for clip: {clipName}");
 			return;
 		}
-
 		CoroutineRunner.Instance.StartCoroutine(FadeCoroutine(source, 0f, 1f, duration));
 	}
 
 	public void FadeOut(string clipName, float duration = 1f) {
-		if (!_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (!_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			Debug.LogWarning($"AudioSource not found for clip: {clipName}");
 			return;
 		}
-
 		CoroutineRunner.Instance.StartCoroutine(FadeCoroutine(source, source.volume, 0f, duration, () => {
 			source.Stop();
-			_activeSources.Remove(clipName);
+			_audioStorage.ActiveSources.Remove(clipName);
 		}));
 	}
 
 	public void SetGlobalMute(bool mute) {
 		_globalMute = mute;
-		foreach (var source in _activeSources.Values) {
+		foreach (var source in _audioStorage.ActiveSources.Values) {
 			source.mute = mute;
 		}
 	}
 
 	public void SetMute(string clipName, bool mute) {
-		if (_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			source.mute = mute;
 		}
 		else {
@@ -390,9 +390,9 @@ public class AudioPlayer : IAudioService, IDisposable {
 	}
 
 	public void StopSound(string clipName) {
-		if (_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			source.Stop();
-			_activeSources.Remove(clipName);
+			_audioStorage.ActiveSources.Remove(clipName);
 		}
 		else {
 			Debug.LogWarning($"AudioSource not found for clip: {clipName}");
@@ -400,7 +400,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 	}
 
 	public void PauseSound(string clipName) {
-		if (_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			source.Pause();
 		}
 		else {
@@ -409,7 +409,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 	}
 
 	public void ResumeSound(string clipName) {
-		if (_activeSources.TryGetValue(clipName, out AudioSource source)) {
+		if (_audioStorage.ActiveSources.TryGetValue(clipName, out AudioSource source)) {
 			source.UnPause();
 		}
 		else {
@@ -418,10 +418,12 @@ public class AudioPlayer : IAudioService, IDisposable {
 	}
 
 	public void StopAllSounds() {
-		foreach (var source in _activeSources.Values) {
-			source.Stop();
+		foreach (var source in _audioStorage.ActiveSources.Values.ToList()) {
+			if (source != null) {
+				source.Stop();
+			}
 		}
-		_activeSources.Clear();
+		_audioStorage.ActiveSources.Clear();
 	}
 
 	private IEnumerator FadeCoroutine(
@@ -432,18 +434,22 @@ public class AudioPlayer : IAudioService, IDisposable {
 		Action? onComplete = null
 	) {
 		float timer = 0f;
+
 		source.volume = startVolume;
+
 		while (timer < duration) {
 			timer += Time.deltaTime;
 			source.volume = Mathf.Lerp(startVolume, targetVolume, timer / duration);
 			yield return null;
 		}
+
 		source.volume = targetVolume;
 		onComplete?.Invoke();
 	}
 
 	public void Dispose() {
-		_audioStorage.DestroyAudioSourceBanks();
+		StopAllSounds();
+		_audioStorage.Dispose();
 	}
 }
 #endregion

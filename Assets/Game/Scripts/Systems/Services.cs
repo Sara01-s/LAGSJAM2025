@@ -65,13 +65,11 @@ public sealed class Services : IDisposable {
 
 	public void Dispose() {
 		foreach (var service in _serviceInstances.Values) {
+			UnregisterService(service.GetType());
+
 			if (service is IDisposable disposable) {
 				disposable.Dispose();
 			}
-		}
-
-		foreach (var service in _serviceInstances.Values) {
-			UnregisterService(service.GetType());
 		}
 	}
 

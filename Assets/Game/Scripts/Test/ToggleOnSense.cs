@@ -19,7 +19,7 @@ public class ToggleOnSense : MonoBehaviour {
 	}
 
 	private void ToggleVisibility(PlayerState state) {
-		if (state.HasFlag(_stateToToggleOn)) {
+		if (!state.HasFlag(PlayerState.CanSee)) {
 			_renderer.color = Color.white;
 		}
 		else {
