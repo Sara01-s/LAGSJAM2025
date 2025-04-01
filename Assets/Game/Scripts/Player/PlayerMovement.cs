@@ -24,9 +24,15 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		_fallGravity = -2.0f * _player.JumpHeight / pow(_player.SecondsToLand, 2.0f);
 	}
 
+	private void Start() {
+		_body.bodyType = RigidbodyType2D.Dynamic;
+		_player.IsFrozen = false;
+	}
+
 	private void OnEnable() {
 		_playerEvents.Input.OnHorizontalHeld += CalculateHorizontalVelocity;
 		_playerEvents.Input.OnHorizontalReleased += StopMovement;
+		_playerEvents.OnPlayerDeath += FreezePlayer;
 		_playerEvents.Input.OnJumpPressed += Jump;
 		_playerEvents.OnPlayerHurt += HandleHurt;
 	}
@@ -34,6 +40,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	private void OnDisable() {
 		_playerEvents.Input.OnHorizontalHeld -= CalculateHorizontalVelocity;
 		_playerEvents.Input.OnHorizontalReleased -= StopMovement;
+		_playerEvents.OnPlayerDeath -= FreezePlayer;
 		_playerEvents.Input.OnJumpPressed -= Jump;
 		_playerEvents.OnPlayerHurt -= HandleHurt;
 	}
@@ -51,6 +58,12 @@ internal sealed class PlayerMovement : MonoBehaviour {
 
 		_body.linearVelocityX = _player.HorizontalVelocity;
 		_body.linearVelocityY += gravity * Time.fixedDeltaTime;
+	}
+
+	private void FreezePlayer() {
+		_player.HorizontalVelocity = 0.0f;
+		_body.bodyType = RigidbodyType2D.Kinematic;
+		_player.IsFrozen = true;
 	}
 
 	private void StopMovement() {

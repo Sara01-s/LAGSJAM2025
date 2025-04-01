@@ -3,9 +3,11 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayerSounds : MonoBehaviour {
+	[Header("References")]
 	[SerializeField] private PlayerData _player;
 	[SerializeField] private PlayerEvents _playerEvents;
 
+	[Header("Footstep sounds")]
 	[SerializeField] private float _footstepInterval = 0.5f;
 
 	private IAudioService _audioService;
@@ -30,7 +32,8 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void PlayPlayerHurtSound(DamageInfo damageInfo) {
-		if (_player.Health > 0) { // Player must be alive.
+		bool playerIsAlive = (_player.Health - damageInfo.DamageAmount) > 0.0f;
+		if (playerIsAlive) {
 			StopAllCoroutines(); // Stop ongoing footstep sounds.
 			_audioService.PlaySound("sfx_player_hurt", pitch: Random.Range(0.85f, 1.2f), volume: 0.7f);
 		}
@@ -42,6 +45,10 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void PlayPlayerWalkSound(float _) {
+		if (!gameObject.activeSelf) {
+			return;
+		}
+
 		StartCoroutine(_PlayFootstepSound());
 
 		IEnumerator _PlayFootstepSound() {

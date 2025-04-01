@@ -63,7 +63,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -95,6 +95,10 @@ MonoBehaviour:
   _damageInfo:
     DamageAmount: 0
     IsKnockback: 0
-    KnockbackForce: {x: 0, y: 0}
+    KnockbackForce: 0
+    KnockbackDuration: 0
     IsDamageOverTime: 0
     DamageInterval: 0
+    ShakeCamera: 0
+    ShakeDuration: 0
+    ShakeMagnitude: 0
