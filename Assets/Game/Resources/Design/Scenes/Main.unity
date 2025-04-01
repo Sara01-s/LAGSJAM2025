@@ -693,8 +693,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f516ca9c0425ae298577091c21fce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _state: 4
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
+  <State>k__BackingField: 4
 --- !u!1 &709209768
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,6 +926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ddc6c0a6ead732990b79882c89ed23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
   _playerData: {fileID: 11400000, guid: 278e6db5c43f6bb2d962f45442f45179, type: 2}
   _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
 --- !u!114 &808116458
@@ -957,10 +958,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 11400000, guid: 278e6db5c43f6bb2d962f45442f45179, type: 2}
   _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _deathTransition: {fileID: 11400000, guid: 06fa0ad2bc756f44ab258bc74947381d, type: 2}
+  _deathTransition: {fileID: 11400000, guid: b0126e1e0c6c2a04895d564bd230dfb9, type: 2}
   _camera: {fileID: 2018801407}
   _healthBarHolder: {fileID: 363141300}
   _healthBarImage: {fileID: 318272289}
+  _fadeDelay: 2
+  _fadeDuration: 1
 --- !u!1 &972039080
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,8 +1305,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f516ca9c0425ae298577091c21fce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _state: 1
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
+  <State>k__BackingField: 1
 --- !u!1 &1166800365
 GameObject:
   m_ObjectHideFlags: 0
@@ -1599,8 +1602,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f516ca9c0425ae298577091c21fce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _state: 8
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
+  <State>k__BackingField: 8
 --- !u!1 &1261354838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1737,8 +1740,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f516ca9c0425ae298577091c21fce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _state: 2
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
+  <State>k__BackingField: 2
 --- !u!1 &1666771076
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,8 +2135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f516ca9c0425ae298577091c21fce91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerEvents: {fileID: 11400000, guid: df6abac1c2e36a0b1b11d4af736b45d7, type: 2}
-  _state: 16
+  _world: {fileID: 11400000, guid: 5a0cbf9ffb5881b63a7a11868aa4eb3d, type: 2}
+  <State>k__BackingField: 16
 --- !u!1 &2018801406
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,6 +2185,14 @@ PrefabInstance:
       value: Hazard
       objectReference: {fileID: 0}
     - target: {fileID: 2907820601067128651, guid: 7682799315ebb068f884c4e3053319ad, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 11400000, guid: 278e6db5c43f6bb2d962f45442f45179, type: 2}
+    - target: {fileID: 2907820601067128651, guid: 7682799315ebb068f884c4e3053319ad, type: 3}
+      propertyPath: _damageInfo.ActiveState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2907820601067128651, guid: 7682799315ebb068f884c4e3053319ad, type: 3}
       propertyPath: _damageInfo.IsKnockback
       value: 1
       objectReference: {fileID: 0}
@@ -2215,7 +2226,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2907820601067128651, guid: 7682799315ebb068f884c4e3053319ad, type: 3}
       propertyPath: _damageInfo.KnockbackDuration
-      value: 0.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 3099603464904862143, guid: 7682799315ebb068f884c4e3053319ad, type: 3}
       propertyPath: m_LocalPosition.x

@@ -1,13 +1,19 @@
 using UnityEngine;
 
 public class PlayerSenses : MonoBehaviour {
+	[SerializeField] private WorldData _world;
 	[SerializeField] private PlayerData _playerData;
 	[SerializeField] private PlayerEvents _playerEvents;
 
 	private void Awake() {
 		_playerData.State = _playerData.InitialState;
-		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
 		Debug.Log($"Player state initialized: {_playerData.State}");
+	}
+
+	private void Start() {
+		// Send initial state.
+		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
+		UpdateSenseTogglables();
 	}
 
 	private void OnEnable() {
@@ -35,10 +41,11 @@ public class PlayerSenses : MonoBehaviour {
 	private void ToggleState(PlayerState state) {
 		int activeStatesCount = CountActiveFlags((int)_playerData.State);
 
-		// By default, the player should have 4 active states.
+		const int minActiveStates = 3;
+		const int maxActiveStates = 4;
 
 		if (_playerData.State.HasFlag(state)) {
-			if (activeStatesCount <= 3) {
+			if (activeStatesCount <= minActiveStates) {
 				Debug.LogWarning("Cannot deactivate more than 2 states at the same time.");
 				return;
 			}
@@ -46,7 +53,7 @@ public class PlayerSenses : MonoBehaviour {
 			_playerData.State &= ~state;
 		}
 		else {
-			if (activeStatesCount >= 4) {
+			if (activeStatesCount >= maxActiveStates) {
 				Debug.LogWarning("At least 1 state must remain inactive.");
 				return;
 			}
@@ -55,10 +62,22 @@ public class PlayerSenses : MonoBehaviour {
 		}
 
 		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
+		UpdateSenseTogglables();
 
 		// Debug stuff.
 		int newActiveStatesCount = CountActiveFlags((int)_playerData.State);
 		Debug.Log($"New player state: ({newActiveStatesCount}) {_playerData.State}");
+	}
+
+	private void UpdateSenseTogglables() {
+		foreach (var togglable in _world.GetSenseTogglables()) {
+			if (_playerData.State.HasFlag(togglable.State)) {
+				togglable.gameObject.SetActive(true);
+			}
+			else {
+				togglable.gameObject.SetActive(false);
+			}
+		}
 	}
 
 	// Thanks to,

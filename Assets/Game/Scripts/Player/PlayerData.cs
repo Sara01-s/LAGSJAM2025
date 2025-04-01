@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
@@ -34,5 +35,4 @@ public class PlayerData : ScriptableObject {
 	public bool IsFrozen = false;
 	public float MaxHealth = 100.0f;
 	public float Health = 100.0f;
-
 }

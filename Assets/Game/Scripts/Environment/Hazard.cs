@@ -4,6 +4,7 @@ using UnityEngine;
 [Serializable]
 public struct DamageInfo {
 	[Header("Damage")]
+	public PlayerState ActiveState;
 	public float DamageAmount;
 
 	[Header("Knockback")]
@@ -23,12 +24,17 @@ public struct DamageInfo {
 
 public class Hazard : MonoBehaviour {
 	[Header("References")]
+	[SerializeField] private PlayerData _player;
 	[SerializeField] private PlayerEvents _playerEvents;
 
 	[Header("Damage Settings")]
 	[SerializeField] private DamageInfo _damageInfo;
 
 	private void OnTriggerEnter2D(Collider2D trigger) {
+		if (!_player.State.HasFlag(_damageInfo.ActiveState)) {
+			return;
+		}
+
 		if (trigger.CompareTag("Player")) {
 			_playerEvents.OnPlayerHurt?.Invoke(_damageInfo);
 		}
