@@ -29,6 +29,10 @@ public class PlayerData : ScriptableObject {
 	public bool IsGrounded;
 
 	[Header("Player State")]
-	public PlayerState InitialState = PlayerState.CanSee | PlayerState.CanSmell | PlayerState.CanTaste | PlayerState.CanTouch | PlayerState.CanHear;
+	public PlayerState InitialState = PlayerState.CanSee | PlayerState.CanSmell | PlayerState.CanTouch | PlayerState.CanHear;
 	public PlayerState State;
+	public bool IsFrozen = false;
+	public float MaxHealth = 100.0f;
+	public float Health = 100.0f;
+
 }

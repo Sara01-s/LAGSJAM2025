@@ -1,5 +1,7 @@
 using static Unity.Mathematics.math;
 using UnityEngine;
+using System.Collections;
+using Unity.VisualScripting;
 
 [SelectionBase, RequireComponent(typeof(Rigidbody2D))]
 internal sealed class PlayerMovement : MonoBehaviour {
@@ -26,12 +28,14 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		_playerEvents.Input.OnHorizontalHeld += CalculateHorizontalVelocity;
 		_playerEvents.Input.OnHorizontalReleased += StopMovement;
 		_playerEvents.Input.OnJumpPressed += Jump;
+		_playerEvents.OnPlayerHurt += HandleHurt;
 	}
 
 	private void OnDisable() {
 		_playerEvents.Input.OnHorizontalHeld -= CalculateHorizontalVelocity;
 		_playerEvents.Input.OnHorizontalReleased -= StopMovement;
 		_playerEvents.Input.OnJumpPressed -= Jump;
+		_playerEvents.OnPlayerHurt -= HandleHurt;
 	}
 
 	private void Update() {
@@ -39,6 +43,10 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	}
 
 	private void FixedUpdate() {
+		if (_player.IsFrozen) {
+			return;
+		}
+
 		float gravity = _body.linearVelocityY > 0.0f ? _jumpGravity : _fallGravity;
 
 		_body.linearVelocityX = _player.HorizontalVelocity;
@@ -64,10 +72,29 @@ internal sealed class PlayerMovement : MonoBehaviour {
 
 		_body.linearVelocityY += _jumpVelocity;
 	}
+
 	public void Respawn(Vector2 vector) {
 		transform.position = vector;
 		_player.HorizontalVelocity = 0;
 		_body.linearVelocityY = 0;
-
 	}
+
+	private void HandleHurt(DamageInfo damageInfo) {
+		if (damageInfo.IsKnockback) {
+			StartCoroutine(_HandleHurt(damageInfo));
+		}
+
+		IEnumerator _HandleHurt(DamageInfo info) {
+			var knockback = new Vector2(x: info.KnockbackForce * 1.0f - sign(_player.HorizontalVelocity),
+										y: info.KnockbackForce);
+
+			_player.IsFrozen = true;
+			_body.linearVelocity = Vector2.zero;
+			_body.AddForce(knockback, ForceMode2D.Impulse);
+
+			yield return new WaitForSeconds(info.KnockbackDuration);
+			_player.IsFrozen = false;
+		}
+	}
+
 }

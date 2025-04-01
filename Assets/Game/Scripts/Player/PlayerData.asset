@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c2df0f08182b65bea4a3d877f54325b, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  Speed: 20
-  JumpHeight: 5
-  SecondsToJumpPeak: 0.5
-  SecondsToLand: 0.5
+  Speed: 7
+  JumpHeight: 2
+  SecondsToJumpPeak: 0.4
+  SecondsToLand: 0.3
   MaxYSpeed: 24.2
-  Position: {x: 22.407982, y: 18.008}
+  Position: {x: 0.8479996, y: -4.853128}
   HorizontalVelocity: 0
   GroundCheckBoxOffset: {x: 0, y: 0}
   GroundCheckBox: {x: 0.69, y: 0.5}
@@ -27,3 +27,6 @@ MonoBehaviour:
   IsGrounded: 1
   InitialState: 15
   State: 15
+  IsFrozen: 0
+  MaxHealth: 100
+  Health: 100

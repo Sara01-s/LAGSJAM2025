@@ -6,7 +6,7 @@ public class PlayerSenses : MonoBehaviour {
 
 	private void Awake() {
 		_playerData.State = _playerData.InitialState;
-		_playerEvents.OnPlayerStateChange?.Invoke(_playerData.State);
+		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
 		Debug.Log($"Player state initialized: {_playerData.State}");
 	}
 
@@ -54,7 +54,9 @@ public class PlayerSenses : MonoBehaviour {
 			_playerData.State |= state;
 		}
 
-		_playerEvents.OnPlayerStateChange?.Invoke(_playerData.State);
+		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
+
+		// Debug stuff.
 		int newActiveStatesCount = CountActiveFlags((int)_playerData.State);
 		Debug.Log($"New player state: ({newActiveStatesCount}) {_playerData.State}");
 	}

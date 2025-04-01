@@ -14,6 +14,7 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 	}
 
 	private void OnDisable() {
+		_inputMap.Disable();
 		_inputMap.Gameplay.RemoveCallbacks(this);
 		_inputMap = null;
 	}
