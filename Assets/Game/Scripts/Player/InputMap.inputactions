@@ -7,10 +7,10 @@
             "actions": [
                 {
                     "name": "Horizontal",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "98974e12-ff1e-4da1-b5af-b914756f4d73",
                     "expectedControlType": "Axis",
-                    "processors": "Normalize(min=-1,max=1)",
+                    "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
                 },
@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "6bd326a4-3aaa-46c0-b6e8-e8339484a342",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -106,7 +115,7 @@
                     "id": "b4d684d1-778b-47a3-889a-8ec47a9fc5fa",
                     "path": "1DAxis",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Normalize(min=-1,max=1)",
                     "groups": "",
                     "action": "Horizontal",
                     "isComposite": true,
@@ -186,6 +195,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Sense5",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc261706-df5c-4be0-a4e3-fa385e861af6",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

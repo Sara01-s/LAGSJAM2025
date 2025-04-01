@@ -41,10 +41,8 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 	}
 
 	public void OnHorizontal(InputAction.CallbackContext context) {
-		if (context.performed) {
-			float value = context.ReadValue<float>();
-			_playerEvents.Input.OnHorizontalHeld?.Invoke(value);
-		}
+		float value = context.ReadValue<float>();
+		_playerEvents.Input.OnHorizontalHeld?.Invoke(value);
 
 		if (context.canceled) {
 			_playerEvents.Input.OnHorizontalReleased?.Invoke();
@@ -88,6 +86,12 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 	public void OnSense5(InputAction.CallbackContext context) {
 		if (context.started) {
 			_playerEvents.Input.OnTastePressed?.Invoke();
+		}
+	}
+
+	public void OnInteract(InputAction.CallbackContext context) {
+		if (context.started) {
+			_playerEvents.Input.OnInteractPressed?.Invoke();
 		}
 	}
 }

@@ -19,6 +19,9 @@ public class PlayerEvents : ScriptableObject {
 		public Action OnTouchPressed;
 		public Action OnHearingPressed;
 
+		// Interaction.
+		public Action OnInteractPressed;
+
 		// Navigation.
 		public Action OnEscInputPressed;
 	}

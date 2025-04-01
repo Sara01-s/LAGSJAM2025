@@ -93,10 +93,10 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Horizontal"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""98974e12-ff1e-4da1-b5af-b914756f4d73"",
                     ""expectedControlType"": ""Axis"",
-                    ""processors"": ""Normalize(min=-1,max=1)"",
+                    ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
@@ -162,6 +162,15 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""6bd326a4-3aaa-46c0-b6e8-e8339484a342"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,7 +201,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""id"": ""b4d684d1-778b-47a3-889a-8ec47a9fc5fa"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Normalize(min=-1,max=1)"",
                     ""groups"": """",
                     ""action"": ""Horizontal"",
                     ""isComposite"": true,
@@ -274,6 +283,17 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
                     ""action"": ""Sense5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc261706-df5c-4be0-a4e3-fa385e861af6"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -290,6 +310,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         m_Gameplay_Sense3 = m_Gameplay.FindAction("Sense3", throwIfNotFound: true);
         m_Gameplay_Sense4 = m_Gameplay.FindAction("Sense4", throwIfNotFound: true);
         m_Gameplay_Sense5 = m_Gameplay.FindAction("Sense5", throwIfNotFound: true);
+        m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
     }
 
     ~@InputMap()
@@ -378,6 +399,7 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Sense3;
     private readonly InputAction m_Gameplay_Sense4;
     private readonly InputAction m_Gameplay_Sense5;
+    private readonly InputAction m_Gameplay_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -421,6 +443,10 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Sense5".
         /// </summary>
         public InputAction @Sense5 => m_Wrapper.m_Gameplay_Sense5;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -471,6 +497,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Sense5.started += instance.OnSense5;
             @Sense5.performed += instance.OnSense5;
             @Sense5.canceled += instance.OnSense5;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -506,6 +535,9 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
             @Sense5.started -= instance.OnSense5;
             @Sense5.performed -= instance.OnSense5;
             @Sense5.canceled -= instance.OnSense5;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -602,5 +634,12 @@ public partial class @InputMap: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSense5(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

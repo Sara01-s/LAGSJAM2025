@@ -1,9 +1,12 @@
+using static Unity.Mathematics.math;
 using UnityEngine;
-using EasyTransition;
+using System.Collections;
 
 public class PlayerSounds : MonoBehaviour {
 	[SerializeField] private PlayerData _player;
 	[SerializeField] private PlayerEvents _playerEvents;
+
+	[SerializeField] private float _footstepInterval = 0.5f;
 
 	private IAudioService _audioService;
 
@@ -27,22 +30,28 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void PlayPlayerHurtSound(DamageInfo damageInfo) {
-		if (_player.Health > 0) { // Player is alive.
+		if (_player.Health > 0) { // Player must be alive.
+			StopAllCoroutines(); // Stop ongoing footstep sounds.
 			_audioService.PlaySound("sfx_player_hurt", pitch: Random.Range(0.85f, 1.2f), volume: 0.7f);
 		}
 	}
 
 	private void PlayPlayerDeathSound() {
+		StopAllCoroutines(); // Stop ongoing footstep sounds.
 		_audioService.PlaySound("sfx_player_hurt", pitch: 0.4f, volume: 0.8f);
 	}
 
 	private void PlayPlayerWalkSound(float _) {
-		if (_player.HorizontalVelocity < 0.1f) {
-			return;
-		}
+		StartCoroutine(_PlayFootstepSound());
 
-		string clip = Random.value < 0.5f ? "sfx_player_footstep_01" : "sfx_player_footstep_02";
-		_audioService.PlaySound(clip, pitch: Random.Range(0.85f, 1.2f), volume: 0.7f);
+		IEnumerator _PlayFootstepSound() {
+			while (abs(_player.HorizontalVelocity) > 0.1f && _player.IsGrounded) {
+				const string clip = "sfx_player_footstep_01";
+				_audioService.PlaySound(clip, pitch: Random.Range(0.85f, 1.0f), volume: Random.Range(0.3f, 0.5f));
+
+				yield return new WaitForSeconds(_footstepInterval);
+			}
+		}
 	}
 
 	private void PlayPlayerLandSound() {
