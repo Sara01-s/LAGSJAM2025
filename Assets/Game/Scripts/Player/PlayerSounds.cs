@@ -58,7 +58,7 @@ public class PlayerSounds : MonoBehaviour {
 
 	private void PlayPlayerDeathSound() {
 		StopAllCoroutines(); // Stop ongoing footstep sounds.
-		_audioService.PlaySound("sfx_ph_player_death", pitch: 0.9f, volume: 0.8f);
+		_audioService.PlaySound("sfx_ph_player_death", pitch: 1.1f, volume: 0.8f);
 	}
 
 	private void PlayPlayerWalkSound(float _) {

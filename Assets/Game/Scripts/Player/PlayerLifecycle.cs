@@ -32,13 +32,7 @@ public class PlayerLifecycle : MonoBehaviour {
 			_player.Events.OnPlayerDeath?.Invoke();
 			var scene = SceneManager.GetActiveScene();
 
-			TransitionManager.Instance().onTransitionBegin += () => {
-				Services.Instance.GetService<IAudioService>().PlaySound("sfx_ph_rise_down_01", volume: 0.8f);
-			};
-			TransitionManager.Instance().onTransitionEnd += () => {
-				Services.Instance.GetService<IAudioService>().PlaySound("sfx_ph_rise_up_01", volume: 0.8f);
-			};
-			TransitionManager.Instance().Transition(scene.name, _deathTransition, startDelay: 0.0f);
+			TransitionManager.Instance.Transition(scene.name, _deathTransition, startDelay: 0.0f);
 			return;
 		}
 

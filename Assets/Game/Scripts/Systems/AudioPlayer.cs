@@ -147,6 +147,7 @@ public class AudioStorage : IDisposable {
 
 	public void CreateAudioSourceBanks() {
 		var banksGO = new GameObject("AudioSourceBanks");
+		UnityEngine.Object.DontDestroyOnLoad(banksGO);
 		banksGO.transform.position = Vector3.up * 15.0f;
 
 		foreach (var mixer in new Mixer[] { Mixer.Music, Mixer.Sfx, Mixer.Ambience }) {

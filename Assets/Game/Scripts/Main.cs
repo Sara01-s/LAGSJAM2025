@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
-public class Main : MonoBehaviour {
-	private void Awake() {
-		Services.Instance.RegisterService<IAudioService, AudioPlayer>();
-	}
+public static class Main {
+	[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+	private static void SpawnCore() {
+		var core = Resources.Load<GameObject>("Core");
 
-	private void OnDestroy() {
-		Services.Instance.Dispose();
+		Object.Instantiate(core);
+		Assert.IsNotNull(core, "Core prefab not found in Resources folder.");
 	}
 }
