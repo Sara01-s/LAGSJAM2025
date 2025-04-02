@@ -2,7 +2,8 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 
 public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
-	[SerializeField] private PlayerEvents _playerEvents;
+	[Header("References")]
+	[SerializeField] private PlayerData _player;
 
 	private InputMap _inputMap;
 
@@ -20,10 +21,10 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 	}
 
 	private void Update() {
-		_playerEvents.Input.IsJumpInputHeld = _inputMap.Gameplay.Jump.IsPressed();
+		_player.Events.Input.IsJumpInputHeld = _inputMap.Gameplay.Jump.IsPressed();
 
-		if (_playerEvents.Input.IsJumpInputHeld) {
-			_playerEvents.Input.OnJumpInputHeld?.Invoke();
+		if (_player.Events.Input.IsJumpInputHeld) {
+			_player.Events.Input.OnJumpInputHeld?.Invoke();
 		}
 	}
 
@@ -35,63 +36,63 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 
 	public void OnEscInput(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnEscInputPressed?.Invoke();
+			_player.Events.Input.OnEscInputPressed?.Invoke();
 			print("Escape input pressed!");
 		}
 	}
 
 	public void OnHorizontal(InputAction.CallbackContext context) {
 		float value = context.ReadValue<float>();
-		_playerEvents.Input.OnHorizontalHeld?.Invoke(value);
+		_player.Events.Input.OnHorizontalHeld?.Invoke(value);
 
 		if (context.canceled) {
-			_playerEvents.Input.OnHorizontalReleased?.Invoke();
+			_player.Events.Input.OnHorizontalReleased?.Invoke();
 		}
 	}
 
 	public void OnJump(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnJumpPressed?.Invoke();
+			_player.Events.Input.OnJumpPressed?.Invoke();
 		}
 
 		if (context.canceled) {
-			_playerEvents.Input.OnJumpReleased?.Invoke();
+			_player.Events.Input.OnJumpReleased?.Invoke();
 		}
 	}
 
 	public void OnSense1(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnSightPressed?.Invoke();
+			_player.Events.Input.OnSightPressed?.Invoke();
 		}
 	}
 
 	public void OnSense2(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnHearingPressed?.Invoke();
+			_player.Events.Input.OnHearingPressed?.Invoke();
 		}
 	}
 
 	public void OnSense3(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnSmellPressed?.Invoke();
+			_player.Events.Input.OnSmellPressed?.Invoke();
 		}
 	}
 
 	public void OnSense4(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnTouchPressed?.Invoke();
+			_player.Events.Input.OnTouchPressed?.Invoke();
 		}
 	}
 
 	public void OnSense5(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnTastePressed?.Invoke();
+			_player.Events.Input.OnTastePressed?.Invoke();
 		}
 	}
 
 	public void OnInteract(InputAction.CallbackContext context) {
 		if (context.started) {
-			_playerEvents.Input.OnInteractPressed?.Invoke();
+			_player.Events.Input.OnInteractPressed?.Invoke();
 		}
 	}
 }

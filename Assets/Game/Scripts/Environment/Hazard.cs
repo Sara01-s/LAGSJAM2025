@@ -25,7 +25,6 @@ public struct DamageInfo {
 public class Hazard : MonoBehaviour {
 	[Header("References")]
 	[SerializeField] private PlayerData _player;
-	[SerializeField] private PlayerEvents _playerEvents;
 
 	[Header("Damage Settings")]
 	[SerializeField] private DamageInfo _damageInfo;
@@ -36,7 +35,7 @@ public class Hazard : MonoBehaviour {
 		}
 
 		if (trigger.CompareTag("Player")) {
-			_playerEvents.OnPlayerHurt?.Invoke(_damageInfo);
+			_player.Events.OnPlayerHurt?.Invoke(_damageInfo);
 		}
 	}
 

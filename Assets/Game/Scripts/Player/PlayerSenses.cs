@@ -2,34 +2,33 @@ using UnityEngine;
 
 public class PlayerSenses : MonoBehaviour {
 	[SerializeField] private WorldData _world;
-	[SerializeField] private PlayerData _playerData;
-	[SerializeField] private PlayerEvents _playerEvents;
+	[SerializeField] private PlayerData _player;
 
 	private void Awake() {
-		_playerData.State = _playerData.InitialState;
-		Debug.Log($"Player state initialized: {_playerData.State}");
+		_player.State = _player.InitialState;
+		Debug.Log($"Player state initialized: {_player.State}");
 	}
 
 	private void Start() {
 		// Send initial state.
-		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
+		_player.Events.OnPlayerStateChanged?.Invoke(_player.State);
 		UpdateSenseTogglables();
 	}
 
 	private void OnEnable() {
-		_playerEvents.Input.OnSightPressed += OnSightPressed;
-		_playerEvents.Input.OnSmellPressed += OnSmellPressed;
-		_playerEvents.Input.OnTastePressed += OnTastePressed;
-		_playerEvents.Input.OnTouchPressed += OnTouchPressed;
-		_playerEvents.Input.OnHearingPressed += OnHearingPressed;
+		_player.Events.Input.OnSightPressed += OnSightPressed;
+		_player.Events.Input.OnSmellPressed += OnSmellPressed;
+		_player.Events.Input.OnTastePressed += OnTastePressed;
+		_player.Events.Input.OnTouchPressed += OnTouchPressed;
+		_player.Events.Input.OnHearingPressed += OnHearingPressed;
 	}
 
 	private void OnDisable() {
-		_playerEvents.Input.OnSightPressed -= OnSightPressed;
-		_playerEvents.Input.OnSmellPressed -= OnSmellPressed;
-		_playerEvents.Input.OnTastePressed -= OnTastePressed;
-		_playerEvents.Input.OnTouchPressed -= OnTouchPressed;
-		_playerEvents.Input.OnHearingPressed -= OnHearingPressed;
+		_player.Events.Input.OnSightPressed -= OnSightPressed;
+		_player.Events.Input.OnSmellPressed -= OnSmellPressed;
+		_player.Events.Input.OnTastePressed -= OnTastePressed;
+		_player.Events.Input.OnTouchPressed -= OnTouchPressed;
+		_player.Events.Input.OnHearingPressed -= OnHearingPressed;
 	}
 
 	private void OnSightPressed() => ToggleState(PlayerState.CanSee);
@@ -39,18 +38,18 @@ public class PlayerSenses : MonoBehaviour {
 	private void OnHearingPressed() => ToggleState(PlayerState.CanHear);
 
 	private void ToggleState(PlayerState state) {
-		int activeStatesCount = CountActiveFlags((int)_playerData.State);
+		int activeStatesCount = CountActiveFlags((int)_player.State);
 
 		const int minActiveStates = 3;
 		const int maxActiveStates = 4;
 
-		if (_playerData.State.HasFlag(state)) {
+		if (_player.State.HasFlag(state)) {
 			if (activeStatesCount <= minActiveStates) {
 				Debug.LogWarning("Cannot deactivate more than 2 states at the same time.");
 				return;
 			}
 
-			_playerData.State &= ~state;
+			_player.State &= ~state;
 		}
 		else {
 			if (activeStatesCount >= maxActiveStates) {
@@ -58,20 +57,20 @@ public class PlayerSenses : MonoBehaviour {
 				return;
 			}
 
-			_playerData.State |= state;
+			_player.State |= state;
 		}
 
-		_playerEvents.OnPlayerStateChanged?.Invoke(_playerData.State);
+		_player.Events.OnPlayerStateChanged?.Invoke(_player.State);
 		UpdateSenseTogglables();
 
 		// Debug stuff.
-		int newActiveStatesCount = CountActiveFlags((int)_playerData.State);
-		Debug.Log($"New player state: ({newActiveStatesCount}) {_playerData.State}");
+		int newActiveStatesCount = CountActiveFlags((int)_player.State);
+		Debug.Log($"New player state: ({newActiveStatesCount}) {_player.State}");
 	}
 
 	private void UpdateSenseTogglables() {
 		foreach (var togglable in _world.GetSenseTogglables()) {
-			if (_playerData.State.HasFlag(togglable.State)) {
+			if (_player.State.HasFlag(togglable.State)) {
 				togglable.gameObject.SetActive(true);
 			}
 			else {

@@ -5,7 +5,6 @@ using System.Collections;
 public class PlayerSounds : MonoBehaviour {
 	[Header("References")]
 	[SerializeField] private PlayerData _player;
-	[SerializeField] private PlayerEvents _playerEvents;
 
 	[Header("Footstep sounds")]
 	[SerializeField] private float _footstepInterval = 0.5f;
@@ -18,30 +17,48 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void OnEnable() {
-		_playerEvents.OnPlayerHurt += PlayPlayerHurtSound;
-		_playerEvents.OnPlayerLand += PlayPlayerLandSound;
-		_playerEvents.OnPlayerDeath += PlayPlayerDeathSound;
-		_playerEvents.Input.OnHorizontalHeld += PlayPlayerWalkSound;
+		_player.Events.OnHealthChanged += PlayHealthSounds;
+		_player.Events.OnPlayerStateChanged += PlaySenseSounds;
+		_player.Events.OnPlayerLand += PlayPlayerLandSound;
+		_player.Events.OnPlayerDeath += PlayPlayerDeathSound;
+		_player.Events.Input.OnHorizontalHeld += PlayPlayerWalkSound;
+		_player.Events.OnPlayerInteract += PlayInteractSound;
 	}
 
 	private void OnDisable() {
-		_playerEvents.OnPlayerHurt -= PlayPlayerHurtSound;
-		_playerEvents.OnPlayerLand -= PlayPlayerLandSound;
-		_playerEvents.Input.OnHorizontalHeld -= PlayPlayerWalkSound;
-		_playerEvents.OnPlayerDeath -= PlayPlayerDeathSound;
+		_player.Events.OnHealthChanged -= PlayHealthSounds;
+		_player.Events.OnPlayerStateChanged -= PlaySenseSounds;
+		_player.Events.OnPlayerLand -= PlayPlayerLandSound;
+		_player.Events.Input.OnHorizontalHeld -= PlayPlayerWalkSound;
+		_player.Events.OnPlayerDeath -= PlayPlayerDeathSound;
+		_player.Events.OnPlayerInteract -= PlayInteractSound;
 	}
 
-	private void PlayPlayerHurtSound(DamageInfo damageInfo) {
-		bool playerIsAlive = (_player.Health - damageInfo.DamageAmount) > 0.0f;
-		if (playerIsAlive) {
-			StopAllCoroutines(); // Stop ongoing footstep sounds.
-			_audioService.PlaySound("sfx_player_hurt", pitch: Random.Range(0.85f, 1.2f), volume: 0.7f);
+	private void PlayHealthSounds(float currentHealth, float previousHealth) {
+		bool playerIsAlive = currentHealth > 0.0f;
+		if (!playerIsAlive) {
+			return; // Player is dead, no need to play health sounds.
 		}
+
+		if (currentHealth < previousHealth) {
+			_audioService.PlaySound("sfx_ph_player_hurt", pitch: Random.Range(1.0f, 1.1f), volume: 0.7f);
+		}
+		else if (currentHealth > previousHealth) {
+			_audioService.PlaySound("sfx_ph_rise_up_01", pitch: Random.Range(0.9f, 1.1f), volume: 0.7f);
+		}
+	}
+
+	private void PlaySenseSounds(PlayerState state) {
+		// TODO - detect wether the new state is a toggle on or toggle off.
+	}
+
+	private void PlayInteractSound(Interactable _) {
+		_audioService.PlaySound("sfx_ph_interaction_grab", pitch: Random.Range(0.85f, 1.2f), volume: 0.7f);
 	}
 
 	private void PlayPlayerDeathSound() {
 		StopAllCoroutines(); // Stop ongoing footstep sounds.
-		_audioService.PlaySound("sfx_player_hurt", pitch: 0.4f, volume: 0.8f);
+		_audioService.PlaySound("sfx_ph_player_death", pitch: 0.9f, volume: 0.8f);
 	}
 
 	private void PlayPlayerWalkSound(float _) {
@@ -53,8 +70,12 @@ public class PlayerSounds : MonoBehaviour {
 
 		IEnumerator _PlayFootstepSound() {
 			while (abs(_player.HorizontalVelocity) > 0.1f && _player.IsGrounded) {
-				const string clip = "sfx_player_footstep_01";
-				_audioService.PlaySound(clip, pitch: Random.Range(0.85f, 1.0f), volume: Random.Range(0.3f, 0.5f));
+				const string clip = "sfx_ph_player_footstep_02";
+				if (_audioService.IsSoundPlaying(clip)) {
+					yield break;
+				}
+
+				_audioService.PlaySound(clip, pitch: Random.Range(0.85f, 1.0f), volume: Random.Range(0.8f, 1.0f));
 
 				yield return new WaitForSeconds(_footstepInterval);
 			}
@@ -62,6 +83,6 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void PlayPlayerLandSound() {
-		_audioService.PlaySound("sfx_player_land_hi", pitch: Random.Range(0.85f, 1.0f), volume: Random.Range(0.3f, 0.5f));
+		_audioService.PlaySound("sfx_ph_player_land", pitch: Random.Range(0.85f, 1.0f), volume: Random.Range(0.3f, 0.5f));
 	}
 }

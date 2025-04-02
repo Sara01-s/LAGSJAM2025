@@ -1,14 +1,12 @@
 using static Unity.Mathematics.math;
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
 
 [SelectionBase, RequireComponent(typeof(Rigidbody2D))]
 internal sealed class PlayerMovement : MonoBehaviour {
 
 	[Header("References")]
 	[SerializeField] private PlayerData _player;
-	[SerializeField] private PlayerEvents _playerEvents;
 
 	private Rigidbody2D _body;
 
@@ -30,19 +28,19 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	}
 
 	private void OnEnable() {
-		_playerEvents.Input.OnHorizontalHeld += CalculateHorizontalVelocity;
-		_playerEvents.Input.OnHorizontalReleased += StopMovement;
-		_playerEvents.OnPlayerDeath += FreezePlayer;
-		_playerEvents.Input.OnJumpPressed += Jump;
-		_playerEvents.OnPlayerHurt += HandleHurt;
+		_player.Events.Input.OnHorizontalHeld += CalculateHorizontalVelocity;
+		_player.Events.Input.OnHorizontalReleased += StopMovement;
+		_player.Events.OnPlayerDeath += FreezePlayer;
+		_player.Events.Input.OnJumpPressed += Jump;
+		_player.Events.OnPlayerHurt += HandleHurt;
 	}
 
 	private void OnDisable() {
-		_playerEvents.Input.OnHorizontalHeld -= CalculateHorizontalVelocity;
-		_playerEvents.Input.OnHorizontalReleased -= StopMovement;
-		_playerEvents.OnPlayerDeath -= FreezePlayer;
-		_playerEvents.Input.OnJumpPressed -= Jump;
-		_playerEvents.OnPlayerHurt -= HandleHurt;
+		_player.Events.Input.OnHorizontalHeld -= CalculateHorizontalVelocity;
+		_player.Events.Input.OnHorizontalReleased -= StopMovement;
+		_player.Events.OnPlayerDeath -= FreezePlayer;
+		_player.Events.Input.OnJumpPressed -= Jump;
+		_player.Events.OnPlayerHurt -= HandleHurt;
 	}
 
 	private void Update() {
