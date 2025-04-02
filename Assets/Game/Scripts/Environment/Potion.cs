@@ -7,12 +7,12 @@ public class Potion : Interactable {
 
 	public override void Interact(PlayerData player) {
 		if (player.Health == player.MaxHealth && _healthModifier > 0.0f) {
-			Services.Instance.GetService<IAudioService>().PlaySound("sfx_ph_error", volume: 0.5f);
+			Services.Instance.GetService<IAudioService>().PlaySound("sfx_ph_error", volume: 0.7f);
 			return;
 		}
 
 		if (_healthModifier < 0.0f || !player.State.HasFlag(_drinkableState)) {
-			// We sent the inverse of the health modifier because hurt system expect only positive values.
+			// We send the inverse of the health modifier because hurt system expects only positive values.
 			player.Events.OnPlayerHurt?.Invoke(new DamageInfo() { DamageAmount = -_healthModifier });
 
 			if (_destroyOnConsume) {

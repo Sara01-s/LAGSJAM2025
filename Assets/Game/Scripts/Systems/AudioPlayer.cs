@@ -425,6 +425,7 @@ public class AudioPlayer : IAudioService, IDisposable {
 				source.Stop();
 			}
 		}
+
 		_audioStorage.ActiveSources.Clear();
 	}
 

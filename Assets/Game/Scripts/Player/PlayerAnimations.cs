@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 public class PlayerAnimations : MonoBehaviour {
 	[SerializeField] private PlayerData _player;
 
@@ -11,6 +11,7 @@ public class PlayerAnimations : MonoBehaviour {
 
 	private int _idle, _walk, _jump, _hurt;
 
+	private SpriteRenderer _spriteRenderer;
 	private Animator _animator;
 
 	private void Awake() {
@@ -19,18 +20,40 @@ public class PlayerAnimations : MonoBehaviour {
 		_jump = Animator.StringToHash(_playerJump.name);
 		_hurt = Animator.StringToHash(_playerHurt.name);
 
+		_spriteRenderer = GetComponent<SpriteRenderer>();
 		_animator = GetComponent<Animator>();
+	}
+
+	private void Start() {
+		PlayIdleAnimation();
 	}
 
 	private void OnEnable() {
 		_player.Events.OnPlayerJump += PlayJumpAnimation;
+		_player.Events.Input.OnHorizontalHeld += HandleSpriteFlip;
+		_player.Events.OnPlayerLand += PlayIdleAnimation;
 	}
 
 	private void OnDisable() {
 		_player.Events.OnPlayerJump -= PlayJumpAnimation;
+		_player.Events.Input.OnHorizontalHeld -= HandleSpriteFlip;
+		_player.Events.OnPlayerLand -= PlayIdleAnimation;
+	}
+
+	private void PlayIdleAnimation() {
+		_animator.CrossFade(_idle, 0.0f);
 	}
 
 	private void PlayJumpAnimation() {
 		_animator.CrossFade(_jump, 0.0f);
 	}
+
+	private void HandleSpriteFlip(float input) {
+		if (Mathf.Approximately(input, 0.0f)) {
+			return;
+		}
+
+		_spriteRenderer.flipX = input < 0.0f;
+	}
+
 }
