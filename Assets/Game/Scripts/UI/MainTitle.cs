@@ -26,26 +26,16 @@ public class MainTitle : MonoBehaviour {
 	}
 
 	private void OnEnable() {
+		_playButton.OnClick.RemoveAllListeners();
 		_playButton.OnClick.AddListener(OnPlayButtonClicked);
-		TransitionManager.Instance.onTransitionBegin += PlayTransitionInSound;
-		TransitionManager.Instance.onTransitionEnd += PlayTransitionOutSound;
 	}
 
 	private void OnDisable() {
-		_playButton.OnClick.RemoveListener(OnPlayButtonClicked);
-		TransitionManager.Instance.onTransitionBegin -= PlayTransitionInSound;
-		TransitionManager.Instance.onTransitionEnd -= PlayTransitionOutSound;
-	}
-
-	private void PlayTransitionInSound() {
-		_audioService.PlaySound("sfx_ph_rise_up_01", volume: 0.8f);
-	}
-
-	private void PlayTransitionOutSound() {
-		_audioService.PlaySound("sfx_ph_rise_down_01", volume: 0.8f);
+		_playButton.OnClick.RemoveAllListeners();
 	}
 
 	private void OnPlayButtonClicked() {
+		_audioService.PlaySound("sfx_ph_play");
 		TransitionManager.Instance.Transition("Game", _transition, startDelay: 0);
 	}
 
