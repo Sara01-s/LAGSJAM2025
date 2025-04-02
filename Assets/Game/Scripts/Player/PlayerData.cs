@@ -65,6 +65,7 @@ public class PlayerData : ScriptableObject {
 		public Inputs Input;
 
 		public Action OnPlayerLand;
+		public Action OnPlayerJump;
 		public Action OnPlayerDeath;
 		public Action OnPlayerRespawn;
 		public Action<DamageInfo> OnPlayerHurt;

@@ -82,6 +82,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		}
 
 		_body.linearVelocityY += _jumpVelocity;
+		_player.Events.OnPlayerJump?.Invoke();
 	}
 
 	public void Respawn(Vector2 vector) {

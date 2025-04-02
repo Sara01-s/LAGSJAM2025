@@ -16,6 +16,7 @@ public abstract class Interactable : MonoBehaviour {
 			Debug.LogError("Interactable target not found, please assign a target to scale.");
 		}
 
+		GetComponent<BoxCollider2D>().isTrigger = true;
 		_initTargetLocalScale = _target.localScale;
 	}
 
