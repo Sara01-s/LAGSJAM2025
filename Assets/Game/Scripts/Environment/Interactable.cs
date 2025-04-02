@@ -35,6 +35,10 @@ public abstract class Interactable : MonoBehaviour {
 
 	private void OnTriggerExit2D(Collider2D trigger) {
 		if (trigger.CompareTag("Player")) {
+			if (trigger.gameObject.activeSelf == false) {
+				return; // Player is dead, no need to scale down.
+			}
+
 			StopCoroutine(ScaleUp());
 			StartCoroutine(ScaleDown());
 			_audioService.PlaySound("sfx_ph_interaction_exit");

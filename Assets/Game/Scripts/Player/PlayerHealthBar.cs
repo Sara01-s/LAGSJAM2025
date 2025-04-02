@@ -25,10 +25,12 @@ public class PlayerHealthBar : MonoBehaviour {
 
 	private void OnEnable() {
 		_player.Events.OnHealthChanged += UpdateHealthBar;
+		_player.Events.OnPlayerDeath += HideHealthBar;
 	}
 
 	private void OnDisable() {
 		_player.Events.OnHealthChanged -= UpdateHealthBar;
+		_player.Events.OnPlayerDeath -= HideHealthBar;
 	}
 
 	private void UpdateHealthBar(float newHealth, float _) {
@@ -46,8 +48,12 @@ public class PlayerHealthBar : MonoBehaviour {
 		_healthBarFadeCoroutine = StartCoroutine(FadeHealthBar());
 	}
 
+	private void HideHealthBar() {
+		StartCoroutine(FadeHealthBar());
+	}
+
 	private IEnumerator ShakeHealthBar() {
-		Vector2 originalPosition = _healthBarHolder.transform.localPosition;
+		var originalPosition = _healthBarHolder.transform.localPosition;
 		float elapsedTime = 0.0f;
 		float shakeDuration = 0.5f;
 		float shakeMagnitude = 0.1f;
