@@ -21,7 +21,7 @@ public class PlayerCameraTransition : MonoBehaviour {
 			PlayerDeath player = GetComponentInParent<PlayerDeath>();
 			BoxCollider2D newZone = other.GetComponent<BoxCollider2D>();
 			switchToCamera(target);
-			if (newZone != null) {
+			if (newZone != null & player != null) {
 				player.SetCurrentZone(newZone);
 			}
 			else { print("no new zone"); }

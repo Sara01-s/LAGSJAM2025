@@ -10,8 +10,7 @@ public abstract class Interactable : MonoBehaviour {
 
 	private Vector3 _initTargetLocalScale;
 	private IAudioService _audioService;
-
-	private void Awake() {
+	public virtual void Awake() {
 		if (_target == null) {
 			Debug.LogError("Interactable target not found, please assign a target to scale.");
 		}
@@ -26,7 +25,7 @@ public abstract class Interactable : MonoBehaviour {
 
 	public abstract void Interact(PlayerData player);
 
-	private void OnTriggerEnter2D(Collider2D trigger) {
+	public virtual void OnTriggerEnter2D(Collider2D trigger) {
 		if (trigger.CompareTag("Player")) {
 			StopCoroutine(ScaleDown());
 			StartCoroutine(ScaleUp());
@@ -34,7 +33,7 @@ public abstract class Interactable : MonoBehaviour {
 		}
 	}
 
-	private void OnTriggerExit2D(Collider2D trigger) {
+	public virtual void OnTriggerExit2D(Collider2D trigger) {
 		if (trigger.CompareTag("Player")) {
 			if (trigger.gameObject.activeSelf == false) {
 				return; // Player is dead, no need to scale down.
