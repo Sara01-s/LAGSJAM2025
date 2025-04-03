@@ -40,9 +40,10 @@ public class ConfigureZone : MonoBehaviour {
 			mapBounds.x + tileOffsetRight + tileOffsetLeft,
 			mapBounds.y + tileOffsetTop + tileOffsetBottom + skySize + groundSize);
 		cameraBounds.offset = offset;
-		cameraBounds.size = size;
-		cameraTrigger.offset = offset;
-		cameraTrigger.size = size - new Vector2(2, 2) * tileSize;
+		cameraBounds.size = size * tileSize;
+		cameraTrigger.offset = offset * tileSize;
+		print(tileSize);
+		cameraTrigger.size = (size - new Vector2(2, 2)) * tileSize;
 		confiner.InvalidateBoundingShapeCache();
 	}
 	public Vector2 GetRespawnPoint() {
