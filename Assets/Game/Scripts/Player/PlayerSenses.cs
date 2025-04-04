@@ -70,12 +70,8 @@ public class PlayerSenses : MonoBehaviour {
 
 	private void UpdateSenseTogglables() {
 		foreach (var togglable in _world.GetSenseTogglables()) {
-			if (_player.State.HasFlag(togglable.State)) {
-				togglable.gameObject.SetActive(true);
-			}
-			else {
-				togglable.gameObject.SetActive(false);
-			}
+			bool hasState = _player.State.HasFlag(togglable.State);
+			togglable.gameObject.SetActive(hasState);
 		}
 	}
 
