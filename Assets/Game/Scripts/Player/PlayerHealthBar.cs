@@ -1,3 +1,4 @@
+using static Unity.Mathematics.math;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -75,7 +76,7 @@ public class PlayerHealthBar : MonoBehaviour {
 
 		while (elapsedTime < _fadeDuration) {
 			elapsedTime += Time.deltaTime;
-			float alpha = Mathf.Lerp(1.0f, 0.0f, elapsedTime / _fadeDuration);
+			float alpha = lerp(1.0f, 0.0f, elapsedTime / _fadeDuration);
 
 			_healthBarCanvasGroup.alpha = alpha;
 

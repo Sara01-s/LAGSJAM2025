@@ -8,13 +8,13 @@ public sealed class PlayerCollision : MonoBehaviour {
 	private bool _wasGroundedLastFrame;
 
 	private void OnEnable() {
-		_player.Events.Input.OnInteractPressed += CheckForInterctables;
+		_player.Events.Input.OnInteractPressed += CheckForInteractables;
 		_player.Events.Input.OnVerticalHeld += SetValue;
 		_player.Events.Input.OnVerticalReleased += ResetValue;
 	}
 
 	private void OnDisable() {
-		_player.Events.Input.OnInteractPressed -= CheckForInterctables;
+		_player.Events.Input.OnInteractPressed -= CheckForInteractables;
 		_player.Events.Input.OnVerticalHeld -= SetValue;
 		_player.Events.Input.OnVerticalReleased -= ResetValue;
 	}
@@ -40,10 +40,10 @@ public sealed class PlayerCollision : MonoBehaviour {
 		_wasGroundedLastFrame = _player.IsGrounded;
 	}
 
-	private void CheckForInterctables() {
+	private void CheckForInteractables() {
 		var boxOrigin = _player.Position + _player.GroundCheckBoxOffset;
 		var boxScale = Vector2.right * _player.GroundCheckBox.x + Vector2.up * _player.GroundCheckBox.y;
-		var colliders = Physics2D.OverlapBoxAll(boxOrigin, boxScale, angle: 0.0f);
+		Collider2D[] colliders = Physics2D.OverlapBoxAll(boxOrigin, boxScale, angle: 0.0f);
 
 		foreach (var collider in colliders) {
 			if (collider.TryGetComponent<Interactable>(out var interactable)) {

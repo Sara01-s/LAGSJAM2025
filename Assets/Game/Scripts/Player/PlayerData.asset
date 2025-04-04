@@ -17,10 +17,10 @@ MonoBehaviour:
   SecondsToJumpPeak: 0.4
   SecondsToLand: 0.3
   MaxYSpeed: 24.2
-  Position: {x: 0.8479996, y: -4.853128}
+  Position: {x: 0.008000784, y: 14.001282}
   HorizontalVelocity: 0
   GroundCheckBoxOffset: {x: 0, y: 0}
-  GroundCheckBox: {x: 0.69, y: 0.5}
+  GroundCheckBox: {x: 0.25, y: 0.15}
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8

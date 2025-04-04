@@ -44,6 +44,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	}
 
 	private void Update() {
+		// This is the source of truth for the player's position.
 		_player.Position = transform.position;
 	}
 

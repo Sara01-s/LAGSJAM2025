@@ -56,7 +56,7 @@ public class PlayerSounds : MonoBehaviour {
 		// This one is tricky, we want to know if the player deactivated or activated a sense.
 		PlayerState changedStates = _previousState ^ newState;          // First,   this "xor" filters the different bits.
 		PlayerState activatedStates = changedStates & newState;         // Then,    this "and" filters bits that went from 0 to 1.
-		PlayerState deactivatedStates = changedStates & _previousState; // Finally, this "and" Bits that went from 1 to 0. :)
+		PlayerState deactivatedStates = changedStates & _previousState; // Finally, this "and" filters bits that went from 1 to 0. :)
 
 		float pitch = Random.Range(0.9f, 1.1f);
 		const float volume = 0.8f;
