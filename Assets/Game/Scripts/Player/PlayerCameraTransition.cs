@@ -12,7 +12,6 @@ public class PlayerCameraTransition : MonoBehaviour {
 	}
 	private void OnTriggerEnter2D(Collider2D other) {
 		if (other.CompareTag("Damage")) {
-			print("damage");
 			GetComponentInParent<PlayerDeath>().Respawn();
 			return;
 		}
@@ -29,7 +28,7 @@ public class PlayerCameraTransition : MonoBehaviour {
 	}
 	private void switchToCamera(CinemachineCamera target) {
 		foreach (var cam in allCameras) {
-			cam.enabled = cam == target;
+			cam.Priority = cam == target ? 1 : 0;
 			//cam.GetComponent<BoxCollider2D>().isTrigger = cam == target;
 		}
 	}
