@@ -42,7 +42,6 @@ public class ConfigureZone : MonoBehaviour {
 		cameraBounds.offset = offset;
 		cameraBounds.size = size * tileSize;
 		cameraTrigger.offset = offset * tileSize;
-		print(tileSize);
 		cameraTrigger.size = (size - new Vector2(2, 2)) * tileSize;
 		confiner.InvalidateBoundingShapeCache();
 	}

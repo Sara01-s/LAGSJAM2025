@@ -57,7 +57,8 @@ public class PlayerData : ScriptableObject {
 
 			// Interaction.
 			public Action OnInteractPressed;
-
+			public Action<float> OnVerticalHeld;
+			public Action OnVerticalReleased;
 			// Navigation.
 			public Action OnEscInputPressed;
 		}

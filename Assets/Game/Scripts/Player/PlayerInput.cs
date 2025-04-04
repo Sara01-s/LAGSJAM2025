@@ -49,6 +49,14 @@ public sealed class PlayerInput : MonoBehaviour, InputMap.IGameplayActions {
 			_player.Events.Input.OnHorizontalReleased?.Invoke();
 		}
 	}
+	public void OnVertical(InputAction.CallbackContext context) {
+		float value = context.ReadValue<float>();
+		_player.Events.Input.OnVerticalHeld?.Invoke(value);
+
+		if (context.canceled) {
+			_player.Events.Input.OnVerticalReleased?.Invoke();
+		}
+	}
 
 	public void OnJump(InputAction.CallbackContext context) {
 		if (context.started) {
