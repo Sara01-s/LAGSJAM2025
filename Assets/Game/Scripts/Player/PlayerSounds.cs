@@ -37,8 +37,8 @@ public class PlayerSounds : MonoBehaviour {
 	}
 
 	private void PlayHealthSounds(float currentHealth, float previousHealth) {
-		bool playerIsAlive = currentHealth > 0.0f;
-		if (!playerIsAlive) {
+		bool playerIsDead = currentHealth <= 0.0f;
+		if (playerIsDead) {
 			return; // Player is dead, no need to play health sounds.
 		}
 
@@ -79,6 +79,7 @@ public class PlayerSounds : MonoBehaviour {
 	private void PlayPlayerDeathSound() {
 		StopAllCoroutines(); // Stop ongoing footstep sounds.
 		_audioService.PlaySound("sfx_ph_player_death", pitch: 1.1f, volume: 0.8f);
+		_player.Events.OnPlayerDeath -= PlayPlayerDeathSound; // Unsubscribe to avoid playing the sound again.
 	}
 
 	private void PlayPlayerWalkSound(float _) {

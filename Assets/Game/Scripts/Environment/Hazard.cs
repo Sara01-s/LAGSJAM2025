@@ -29,6 +29,24 @@ public class Hazard : MonoBehaviour {
 	[Header("Damage Settings")]
 	[SerializeField] private DamageInfo _damageInfo;
 
+	private float _currentDamageInterval = 0.0f;
+
+	private void OnTriggerStay2D(Collider2D trigger) {
+		if (!_player.State.HasFlag(_damageInfo.ActiveState) || !_damageInfo.IsDamageOverTime) {
+			return;
+		}
+
+		if (trigger.CompareTag("Player")) {
+			if (_currentDamageInterval > 0) {
+				_currentDamageInterval -= Time.deltaTime;
+				return;
+			}
+
+			_currentDamageInterval = _damageInfo.DamageInterval;
+			_player.Events.OnPlayerHurt?.Invoke(_damageInfo);
+		}
+	}
+
 	private void OnTriggerEnter2D(Collider2D trigger) {
 		if (!_player.State.HasFlag(_damageInfo.ActiveState)) {
 			return;
