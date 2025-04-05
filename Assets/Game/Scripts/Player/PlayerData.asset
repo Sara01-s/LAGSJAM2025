@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 2
   JumpHeight: 1.4
-  SecondsToJumpPeak: 0.4
-  SecondsToLand: 0.3
+  SecondsToJumpPeak: 0.8
+  SecondsToLand: 1
   MaxYSpeed: 24.2
-  Position: {x: 17.999994, y: 14.695139}
+  Position: {x: 17.27448, y: 16.29514}
   HorizontalVelocity: 0
   GroundCheckBoxOffset: {x: 0, y: 0}
   GroundCheckBox: {x: 0.14, y: 0.09}
@@ -26,7 +26,7 @@ MonoBehaviour:
     m_Bits: 8
   IsGrounded: 1
   InitialState: 15
-  State: 15
+  State: 14
   IsFrozen: 0
   MaxHealth: 100
-  Health: 100
+  Health: 98
