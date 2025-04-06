@@ -93,7 +93,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		}
 
 		IEnumerator _HandleHurt(DamageInfo info) {
-			var knockback = new Vector2(x: info.KnockbackForce * 1.0f - sign(_player.HorizontalVelocity),
+			var knockback = new Vector2(x: info.KnockbackForce * -sign(_player.HorizontalVelocity),
 										y: info.KnockbackForce);
 
 			_player.IsFrozen = true;

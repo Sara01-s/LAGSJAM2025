@@ -1,4 +1,4 @@
-using static Unity.Mathematics.math;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
@@ -9,18 +9,13 @@ public class PlayerAnimations : MonoBehaviour {
 	[SerializeField] private AnimationClip _playerWalk;
 	[SerializeField] private AnimationClip _playerJump;
 	[SerializeField] private AnimationClip _playerHurt;
-
-	private int _idle, _walk, _jump, _hurt;
+	[SerializeField] private AnimationClip _playerDeath;
 
 	private SpriteRenderer _spriteRenderer;
+	private int _currentState = 0;
 	private Animator _animator;
 
 	private void Awake() {
-		_idle = Animator.StringToHash(_playerIdle.name);
-		_walk = Animator.StringToHash(_playerWalk.name);
-		_jump = Animator.StringToHash(_playerJump.name);
-		_hurt = Animator.StringToHash(_playerHurt.name);
-
 		_spriteRenderer = GetComponent<SpriteRenderer>();
 		_animator = GetComponent<Animator>();
 	}
@@ -34,6 +29,7 @@ public class PlayerAnimations : MonoBehaviour {
 		_player.Events.Input.OnHorizontalHeld += PlayWalkAnimation;
 		_player.Events.OnPlayerLand += PlayIdleAnimation;
 		_player.Events.OnPlayerHurt += PlayHurtAnimation;
+		_player.Events.OnPlayerDeath += PlayDeathAnimation;
 	}
 
 	private void OnDisable() {
@@ -41,6 +37,12 @@ public class PlayerAnimations : MonoBehaviour {
 		_player.Events.Input.OnHorizontalHeld -= PlayWalkAnimation;
 		_player.Events.OnPlayerLand -= PlayIdleAnimation;
 		_player.Events.OnPlayerHurt -= PlayHurtAnimation;
+		_player.Events.OnPlayerDeath -= PlayDeathAnimation;
+	}
+
+	private void PlayDeathAnimation() {
+		StartCoroutine(ChangeAnimationStateComplete(_playerDeath.name, _playerIdle.name));
+		_player.Events.OnPlayerDeath -= PlayDeathAnimation;
 	}
 
 	private void PlayIdleAnimation() {
@@ -48,11 +50,11 @@ public class PlayerAnimations : MonoBehaviour {
 	}
 
 	private void PlayJumpAnimation() {
-		_animator.CrossFade(_jump, 0.0f);
+		ChangeAnimationState(_playerJump.name);
 	}
 
 	private void PlayHurtAnimation(DamageInfo _) {
-		_animator.CrossFade(_hurt, 0.0f);
+		StartCoroutine(ChangeAnimationStateComplete(_playerHurt.name, _playerIdle.name));
 	}
 
 	private void PlayWalkAnimation(float input) {
@@ -61,11 +63,27 @@ public class PlayerAnimations : MonoBehaviour {
 		}
 
 		if (Mathf.Approximately(input, 0.0f)) {
-			_animator.CrossFade(_idle, 0.0f);
+			ChangeAnimationState(_playerIdle.name);
 			return;
 		}
 
-		_animator.CrossFade(_walk, 0.0f);
+		ChangeAnimationState(_playerWalk.name);
 		_spriteRenderer.flipX = input < 0.0f;
+	}
+
+
+	public void ChangeAnimationState(string newState) {
+		if (_currentState == Animator.StringToHash(newState)) {
+			return;
+		}
+
+		_animator.Play(newState);
+		_currentState = Animator.StringToHash(newState);
+	}
+
+	public IEnumerator ChangeAnimationStateComplete(string newState, string nextState) {
+		ChangeAnimationState(newState);
+		yield return new WaitForSecondsRealtime(_animator.GetCurrentAnimatorStateInfo(0).length);
+		ChangeAnimationState(nextState);
 	}
 }
