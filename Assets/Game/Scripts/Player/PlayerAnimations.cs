@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
@@ -60,8 +61,15 @@ public class PlayerAnimations : MonoBehaviour {
 	}
 
 	private void PlayDeathAnimation() {
-		ChangeAnimationState(_playerDeath.name);
 		UnsubscribeAll();
+		ChangeAnimationState(_playerDeath.name);
+
+		StartCoroutine(PLEASE_DIEEEEEEEEEEEEEEEEE());
+
+		IEnumerator PLEASE_DIEEEEEEEEEEEEEEEEE() {
+			yield return new WaitForSecondsRealtime(_animator.GetCurrentAnimatorStateInfo(layerIndex: 0).length);
+			Destroy(gameObject);
+		}
 	}
 
 	private void PlayIdleAnimation() {
