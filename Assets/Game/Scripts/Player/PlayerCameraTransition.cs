@@ -4,31 +4,35 @@ using UnityEngine;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 public class PlayerCameraTransition : MonoBehaviour {
-	public string triggerTag;
-	public CinemachineCamera primaryCamera;
-	public CinemachineCamera[] allCameras;
-	private void Awake() {
-		primaryCamera.Prioritize();
-
-	}
-	private void OnTriggerEnter2D(Collider2D other) {
-		if (other.CompareTag(triggerTag)) {
-			print("trigger change");
-			CinemachineCamera target = other.GetComponentInChildren<CinemachineCamera>();
-			PlayerMovement player = GetComponentInParent<PlayerMovement>();
-			ConfigureZone newZone = other.GetComponentInParent<ConfigureZone>();
-			switchToCamera(target);
-			if (newZone != null && player != null) {
-				player.SetRespawnPoint(newZone.GetRespawnPoint());
-			}
+	public class PlayerCameraTransition : MonoBehaviour {
+		public string triggerTag;
+		public CinemachineCamera primaryCamera;
+		public CinemachineCamera[] allCameras;
+		private void Start() {
+			switchToCamera(primaryCamera);
 		}
-	}
-	private void switchToCamera(CinemachineCamera target) {
-		foreach (var cam in allCameras) {
-			if (cam == target) {
-				cam.Prioritize();
+		private void Awake() {
+			switchToCamera(primaryCamera);
+		}
+		private void OnTriggerEnter2D(Collider2D other) {
+			if (other.CompareTag("Damage")) {
+				GetComponentInParent<PlayerDeath>().Respawn();
 				return;
 			}
+			if (other.CompareTag(triggerTag)) {
+				CinemachineCamera target = other.GetComponentInChildren<CinemachineCamera>();
+				PlayerMovement player = GetComponentInParent<PlayerMovement>();
+				ConfigureZone newZone = other.GetComponentInParent<ConfigureZone>();
+				switchToCamera(target);
+				if (newZone != null & player != null) {
+					player.SetCurrentZone(newZone);
+				}
+				else { print("no new zone"); }
+			}
+		}
+		private void switchToCamera(CinemachineCamera target) {
+			foreach (var cam in allCameras) {
+				cam.Priority = cam == target ? 1 : 0;
+			}
 		}
 	}
-}

@@ -78,4 +78,12 @@ public class PlayerData : ScriptableObject {
 		public Action<Interactable> OnPlayerInteractEnter;
 		public Action<Interactable> OnPlayerInteractExit;
 	}
+
+	public void ResetData() {
+		HorizontalVelocity = 0.0f;
+		IsGrounded = true;
+		State = InitialState;
+		IsFrozen = false;
+		Health = MaxHealth;
+	}
 }

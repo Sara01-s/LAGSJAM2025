@@ -48,8 +48,10 @@ public class PlayerLifecycle : MonoBehaviour {
 		while (elapsedTime < info.ShakeDuration) {
 			float x = Random.Range(-info.ShakeMagnitude, info.ShakeMagnitude);
 			float y = Random.Range(-info.ShakeMagnitude, info.ShakeMagnitude);
+
 			target.localPosition = new Vector2(originalPosition.x + x, originalPosition.y + y);
 			elapsedTime += Time.deltaTime;
+
 			yield return null;
 		}
 

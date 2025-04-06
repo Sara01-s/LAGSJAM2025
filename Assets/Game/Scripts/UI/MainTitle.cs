@@ -39,7 +39,7 @@ public class MainTitle : MonoBehaviour {
 		TransitionManager.Instance.Transition("Game", _transition, startDelay: 0);
 	}
 
-	private void QuitApplication() {
+	public void QuitApplication() {
 		print("TODO - Quit!");
 	}
 }

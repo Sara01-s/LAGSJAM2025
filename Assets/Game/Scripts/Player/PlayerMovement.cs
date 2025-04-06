@@ -62,7 +62,6 @@ internal sealed class PlayerMovement : MonoBehaviour {
 
 	private void FreezePlayer() {
 		_player.HorizontalVelocity = 0.0f;
-		_body.bodyType = RigidbodyType2D.Kinematic;
 		_player.IsFrozen = true;
 	}
 

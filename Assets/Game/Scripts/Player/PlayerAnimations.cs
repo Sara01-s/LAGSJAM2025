@@ -40,7 +40,24 @@ public class PlayerAnimations : MonoBehaviour {
 		_player.Events.OnPlayerDeath -= PlayDeathAnimation;
 	}
 
+	public void ChangeAnimationState(string newState) {
+		if (_currentState == Animator.StringToHash(newState)) {
+			return;
+		}
+
+		_animator.CrossFade(Animator.StringToHash(newState), normalizedTransitionDuration: 0.0f);
+		_currentState = Animator.StringToHash(newState);
+	}
+
+	public IEnumerator ChangeAnimationStateComplete(string newState, string nextState) {
+		ChangeAnimationState(newState);
+		yield return new WaitForSecondsRealtime(_animator.GetCurrentAnimatorStateInfo(layerIndex: 0).length);
+		ChangeAnimationState(nextState);
+	}
+
 	private void PlayDeathAnimation() {
+		_spriteRenderer.enabled = false;
+
 		StartCoroutine(ChangeAnimationStateComplete(_playerDeath.name, _playerIdle.name));
 		_player.Events.OnPlayerDeath -= PlayDeathAnimation;
 	}
@@ -69,21 +86,5 @@ public class PlayerAnimations : MonoBehaviour {
 
 		ChangeAnimationState(_playerWalk.name);
 		_spriteRenderer.flipX = input < 0.0f;
-	}
-
-
-	public void ChangeAnimationState(string newState) {
-		if (_currentState == Animator.StringToHash(newState)) {
-			return;
-		}
-
-		_animator.Play(newState);
-		_currentState = Animator.StringToHash(newState);
-	}
-
-	public IEnumerator ChangeAnimationStateComplete(string newState, string nextState) {
-		ChangeAnimationState(newState);
-		yield return new WaitForSecondsRealtime(_animator.GetCurrentAnimatorStateInfo(0).length);
-		ChangeAnimationState(nextState);
 	}
 }

@@ -14,7 +14,7 @@ public class PlayerSounds : MonoBehaviour {
 
 	private void Start() {
 		_audioService = Services.Instance.GetService<IAudioService>();
-		_audioService.PlaySound("amb_forest", Mixer.Ambience, volume: 0.5f, loop: true);
+		_audioService.PlaySound("amb_forest", Mixer.Ambience, volume: 1.0f, loop: true);
 		_previousState = _player.InitialState;
 	}
 
