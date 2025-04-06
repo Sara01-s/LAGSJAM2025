@@ -104,7 +104,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		}
 	}
 
-	public void SetRespawnPoint(Vector2 respawn) {
-		_player.RespawnPoint = respawn;
+	public void SetRespawnPoint(Vector2 respawnPoint) {
+		_player.RespawnPoint = respawnPoint;
 	}
 }
