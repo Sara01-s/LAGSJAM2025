@@ -53,7 +53,7 @@ namespace EasyTransition {
 		/// <param name="startDelay">The delay before the transition starts.</param>
 		public void Transition(string sceneName, TransitionSettings transition, float startDelay) {
 			if (transition == null || runningTransition) {
-				Debug.LogError("You have to assing a transition.");
+				Debug.LogError("You have to assign a transition.");
 				return;
 			}
 

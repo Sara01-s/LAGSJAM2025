@@ -103,6 +103,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 			_player.IsFrozen = false;
 		}
 	}
+
 	public void SetRespawnPoint(Vector2 respawn) {
 		_player.RespawnPoint = respawn;
 	}

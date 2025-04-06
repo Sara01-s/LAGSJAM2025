@@ -33,6 +33,10 @@ public class PlayerAnimations : MonoBehaviour {
 	}
 
 	private void OnDisable() {
+		UnsubscribeAll();
+	}
+
+	private void UnsubscribeAll() {
 		_player.Events.OnPlayerJump -= PlayJumpAnimation;
 		_player.Events.Input.OnHorizontalHeld -= PlayWalkAnimation;
 		_player.Events.OnPlayerLand -= PlayIdleAnimation;
@@ -56,10 +60,8 @@ public class PlayerAnimations : MonoBehaviour {
 	}
 
 	private void PlayDeathAnimation() {
-		_spriteRenderer.enabled = false;
-
-		StartCoroutine(ChangeAnimationStateComplete(_playerDeath.name, _playerIdle.name));
-		_player.Events.OnPlayerDeath -= PlayDeathAnimation;
+		ChangeAnimationState(_playerDeath.name);
+		UnsubscribeAll();
 	}
 
 	private void PlayIdleAnimation() {
