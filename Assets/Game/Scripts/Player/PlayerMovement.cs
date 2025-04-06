@@ -25,6 +25,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 	private void Start() {
 		_body.bodyType = RigidbodyType2D.Dynamic;
 		_player.IsFrozen = false;
+		transform.position = _player.RespawnPoint;
 	}
 
 	private void OnEnable() {
@@ -86,12 +87,6 @@ internal sealed class PlayerMovement : MonoBehaviour {
 		_player.Events.OnPlayerJump?.Invoke();
 	}
 
-	public void Respawn(Vector2 vector) {
-		transform.position = vector;
-		_player.HorizontalVelocity = 0;
-		_body.linearVelocityY = 0;
-	}
-
 	private void HandleHurt(DamageInfo damageInfo) {
 		if (damageInfo.IsKnockback) {
 			StartCoroutine(_HandleHurt(damageInfo));
@@ -109,5 +104,7 @@ internal sealed class PlayerMovement : MonoBehaviour {
 			_player.IsFrozen = false;
 		}
 	}
-
+	public void SetRespawnPoint(Vector2 respawn) {
+		_player.RespawnPoint = respawn;
+	}
 }

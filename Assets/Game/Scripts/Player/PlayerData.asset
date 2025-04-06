@@ -17,7 +17,7 @@ MonoBehaviour:
   SecondsToJumpPeak: 0.8
   SecondsToLand: 1
   MaxYSpeed: 24.2
-  Position: {x: 17.27448, y: 16.29514}
+  Position: {x: 1.8344574, y: 14.695138}
   HorizontalVelocity: 0
   GroundCheckBoxOffset: {x: 0, y: 0}
   GroundCheckBox: {x: 0.14, y: 0.09}
@@ -26,7 +26,8 @@ MonoBehaviour:
     m_Bits: 8
   IsGrounded: 1
   InitialState: 15
-  State: 14
+  State: 15
   IsFrozen: 0
   MaxHealth: 100
-  Health: 98
+  Health: 99
+  RespawnPoint: {x: -2.03, y: 15}

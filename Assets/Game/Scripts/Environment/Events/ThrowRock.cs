@@ -16,7 +16,6 @@ public class ThrowRock : Manipulable {
 	private Collider2D _trigger;
 	public override void Awake() {
 		base.Awake();
-
 	}
 	public override void Interact(PlayerData player) {
 		SummonRock();

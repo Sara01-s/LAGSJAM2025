@@ -34,7 +34,7 @@ public class PlayerData : ScriptableObject {
 	public bool IsFrozen = false;
 	public float MaxHealth = 100.0f;
 	public float Health = 100.0f;
-
+	public Vector2 RespawnPoint;
 	[Header("Events"), HideInInspector]
 	public PlayerEvents Events = new();
 
