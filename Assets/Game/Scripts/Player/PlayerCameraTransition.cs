@@ -19,7 +19,7 @@ public class PlayerCameraTransition : MonoBehaviour {
 			ConfigureZone newZone = other.GetComponentInParent<ConfigureZone>();
 			switchToCamera(target);
 			if (newZone != null && player != null) {
-				player.SetRespawnPoint(newZone.GetRespawnPoint());
+				//player.SetRespawnPoint(newZone.GetRespawnPoint());
 			}
 		}
 	}

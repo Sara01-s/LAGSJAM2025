@@ -1,6 +1,6 @@
 using System.Collections;
-using UnityEditor.Rendering;
 using UnityEngine;
+
 
 [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 public class PlayerAnimations : MonoBehaviour {
