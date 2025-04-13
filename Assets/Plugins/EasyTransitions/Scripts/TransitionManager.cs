@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace EasyTransition {
 
 	public class TransitionManager : MonoBehaviour {
-		[SerializeField] private GameObject transitionTemplate;
+		[FormerlySerializedAs("transitionTemplate")]
+		[SerializeField] private GameObject _transitionTemplate;
 
-		private bool runningTransition;
+		private bool _runningTransition;
 
-		public UnityAction onTransitionBegin;
-		public UnityAction onTransitionCutPointReached;
-		public UnityAction onTransitionEnd;
+		public UnityAction _onTransitionBegin;
+		public UnityAction _onTransitionCutPointReached;
+		public UnityAction _onTransitionEnd;
 
 		private static TransitionManager instance;
 
@@ -36,12 +38,12 @@ namespace EasyTransition {
 		/// <param name="transition">The settings of the transition you want to use.</param>
 		/// <param name="startDelay">The delay before the transition starts.</param>
 		public void Transition(TransitionSettings transition, float startDelay) {
-			if (transition == null || runningTransition) {
+			if (transition == null || _runningTransition) {
 				Debug.LogError("You have to assing a transition.");
 				return;
 			}
 
-			runningTransition = true;
+			_runningTransition = true;
 			StartCoroutine(Timer(startDelay, transition));
 		}
 
@@ -52,12 +54,12 @@ namespace EasyTransition {
 		/// <param name="transition">The settings of the transition you want to use to load you new scene.</param>
 		/// <param name="startDelay">The delay before the transition starts.</param>
 		public void Transition(string sceneName, TransitionSettings transition, float startDelay) {
-			if (transition == null || runningTransition) {
+			if (transition == null || _runningTransition) {
 				Debug.LogError("You have to assign a transition.");
 				return;
 			}
 
-			runningTransition = true;
+			_runningTransition = true;
 			StartCoroutine(Timer(sceneName, startDelay, transition));
 		}
 
@@ -68,29 +70,21 @@ namespace EasyTransition {
 		/// <param name="transition">The settings of the transition you want to use to load you new scene.</param>
 		/// <param name="startDelay">The delay before the transition starts.</param>
 		public void Transition(int sceneIndex, TransitionSettings transition, float startDelay) {
-			if (transition == null || runningTransition) {
+			if (transition == null || _runningTransition) {
 				Debug.LogError("You have to assing a transition.");
 				return;
 			}
 
-			runningTransition = true;
+			_runningTransition = true;
 			StartCoroutine(Timer(sceneIndex, startDelay, transition));
 		}
 
-		/// <summary>
-		/// Gets the index of a scene from its name.
-		/// </summary>
-		/// <param name="sceneName">The name of the scene you want to get the index of.</param>
-		int GetSceneIndex(string sceneName) {
-			return SceneManager.GetSceneByName(sceneName).buildIndex;
-		}
-
-		IEnumerator Timer(string sceneName, float startDelay, TransitionSettings transitionSettings) {
+		private IEnumerator Timer(string sceneName, float startDelay, TransitionSettings transitionSettings) {
 			yield return new WaitForSecondsRealtime(startDelay);
 
-			onTransitionBegin?.Invoke();
+			_onTransitionBegin?.Invoke();
 
-			GameObject template = Instantiate(transitionTemplate) as GameObject;
+			GameObject template = Instantiate(_transitionTemplate) as GameObject;
 			template.GetComponent<Transition>().transitionSettings = transitionSettings;
 
 			float transitionTime = transitionSettings.transitionTime;
@@ -99,76 +93,124 @@ namespace EasyTransition {
 
 			yield return new WaitForSecondsRealtime(transitionTime);
 
-			onTransitionCutPointReached?.Invoke();
+			_onTransitionCutPointReached?.Invoke();
 
 			SceneManager.LoadScene(sceneName);
 
 			yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
 
-			onTransitionEnd?.Invoke();
+			_onTransitionEnd?.Invoke();
 
-			runningTransition = false;
+			_runningTransition = false;
 		}
 
-		IEnumerator Timer(int sceneIndex, float startDelay, TransitionSettings transitionSettings) {
+		private IEnumerator Timer(int sceneIndex, float startDelay, TransitionSettings transitionSettings) {
 			yield return new WaitForSecondsRealtime(startDelay);
 
-			onTransitionBegin?.Invoke();
+			_onTransitionBegin?.Invoke();
 
-			GameObject template = Instantiate(transitionTemplate) as GameObject;
+			GameObject template = Instantiate(_transitionTemplate);
 			template.GetComponent<Transition>().transitionSettings = transitionSettings;
 
 			float transitionTime = transitionSettings.transitionTime;
-			if (transitionSettings.autoAdjustTransitionTime)
-				transitionTime = transitionTime / transitionSettings.transitionSpeed;
+			if (transitionSettings.autoAdjustTransitionTime) {
+				transitionTime /= transitionSettings.transitionSpeed;
+			}
 
 			yield return new WaitForSecondsRealtime(transitionTime);
 
-			onTransitionCutPointReached?.Invoke();
+			_onTransitionCutPointReached?.Invoke();
 
 			SceneManager.LoadScene(sceneIndex);
 
 			yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
 
-			onTransitionEnd?.Invoke();
+			_onTransitionEnd?.Invoke();
 
-			runningTransition = false;
+			_runningTransition = false;
 		}
 
-		IEnumerator Timer(float delay, TransitionSettings transitionSettings) {
+		private IEnumerator Timer(float delay, TransitionSettings transitionSettings) {
 			yield return new WaitForSecondsRealtime(delay);
 
-			onTransitionBegin?.Invoke();
+			_onTransitionBegin?.Invoke();
 
-			GameObject template = Instantiate(transitionTemplate) as GameObject;
+			GameObject template = Instantiate(_transitionTemplate);
 			template.GetComponent<Transition>().transitionSettings = transitionSettings;
 
 			float transitionTime = transitionSettings.transitionTime;
-			if (transitionSettings.autoAdjustTransitionTime)
-				transitionTime = transitionTime / transitionSettings.transitionSpeed;
+			if (transitionSettings.autoAdjustTransitionTime) {
+				transitionTime /= transitionSettings.transitionSpeed;
+			}
+
+			yield return new WaitForSecondsRealtime(transitionTime);
+
+			_onTransitionCutPointReached?.Invoke();
+
+			template.GetComponent<Transition>().OnSceneLoad(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+
+			yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
+
+			_onTransitionEnd?.Invoke();
+
+			_runningTransition = false;
+		}
+
+		private IEnumerator Start() {
+			while (gameObject.activeInHierarchy) {
+				//Check for multiple instances of the Transition Manager component
+				int managerCount = FindObjectsByType<TransitionManager>(FindObjectsSortMode.None).Length;
+
+				if (managerCount > 1) {
+					Debug.LogError($"There are {managerCount} Transition Managers in your scene. Please ensure there is only one Transition Manager in your scene or overlapping transitions may occur.");
+				}
+
+				yield return new WaitForSecondsRealtime(1f);
+			}
+		}
+
+		public void TransitionWithoutSceneLoad(
+			TransitionSettings transition,
+			UnityAction onTransitionBegin = null,
+			UnityAction onTransitionCutPointReached = null,
+			UnityAction onTransitionEnd = null
+		) {
+			if (transition == null || _runningTransition) {
+				Debug.LogError("You have to assign a transition.");
+				return;
+			}
+
+			_runningTransition = true;
+			StartCoroutine(TimerWithoutSceneLoad(transition, onTransitionBegin, onTransitionCutPointReached, onTransitionEnd));
+		}
+
+		private IEnumerator TimerWithoutSceneLoad(
+			TransitionSettings transitionSettings,
+			UnityAction onTransitionBegin = null,
+			UnityAction onTransitionCutPointReached = null,
+			UnityAction onTransitionEnd = null
+		) {
+			onTransitionBegin?.Invoke();
+
+			GameObject template = Instantiate(_transitionTemplate);
+			template.GetComponent<Transition>().transitionSettings = transitionSettings;
+
+			float transitionTime = transitionSettings.transitionTime;
+
+			if (transitionSettings.autoAdjustTransitionTime) {
+				transitionTime /= transitionSettings.transitionSpeed;
+			}
 
 			yield return new WaitForSecondsRealtime(transitionTime);
 
 			onTransitionCutPointReached?.Invoke();
-
 			template.GetComponent<Transition>().OnSceneLoad(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 
 			yield return new WaitForSecondsRealtime(transitionSettings.destroyTime);
 
 			onTransitionEnd?.Invoke();
 
-			runningTransition = false;
-		}
-
-		private IEnumerator Start() {
-			while (this.gameObject.activeInHierarchy) {
-				//Check for multiple instances of the Transition Manager component
-				var managerCount = FindObjectsByType<TransitionManager>(FindObjectsSortMode.None).Length;
-				if (managerCount > 1)
-					Debug.LogError($"There are {managerCount.ToString()} Transition Managers in your scene. Please ensure there is only one Transition Manager in your scene or overlapping transitions may occur.");
-
-				yield return new WaitForSecondsRealtime(1f);
-			}
+			_runningTransition = false;
 		}
 	}
 

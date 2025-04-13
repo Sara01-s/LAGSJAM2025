@@ -33,3 +33,5 @@ MonoBehaviour:
     m_Color: {r: 0.4, g: 0.9529412, b: 0.5647059, a: 1}
   - m_Name: 
     m_Color: {r: 1, g: 1, b: 1, a: 1}
+  - m_Name: 
+    m_Color: {r: 0, g: 0.83137256, b: 0.34901962, a: 1}
