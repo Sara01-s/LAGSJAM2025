@@ -3,8 +3,10 @@ using System.Collections;
 using UnityEngine;
 
 public class TimeChanger : Interactable {
-	[SerializeField] private float _timeChange = 0.5f;
-	[SerializeField] private float _timeChangeDurationSec = 1.0f;
+	[SerializeField] private float _newTime = 0.5f;
+
+	[Tooltip("If the new time duration is 0, the time will be changed indefinitely.")]
+	[SerializeField] private float _newTimeDurationSec = 1.0f;
 	[SerializeField] private float _timeTransitionDurationSec = 1.0f;
 
 	[SerializeField] private bool _needsMainInput;
@@ -22,31 +24,34 @@ public class TimeChanger : Interactable {
 
 	public override void OnInteractEnter(PlayerData player) {
 		if (_needsMainInput) {
-			StartCoroutine(ChangeTimeUntilInput(_timeChange, player.Input.IsMainInputHeld, _timeChangeDurationSec));
+			StartCoroutine(ChangeTimeUntilInput(_newTime, player.Input.IsMainInputHeld, _newTimeDurationSec));
 		}
 		else if (_needsInteractInput) {
-			StartCoroutine(ChangeTimeUntilInput(_timeChange, player.Input.InteractWasPressedThisFrame, _timeChangeDurationSec));
+			StartCoroutine(ChangeTimeUntilInput(_newTime, player.Input.InteractWasPressedThisFrame, _newTimeDurationSec));
+		}
+		else if (_newTimeDurationSec <= 0.0f) {
+			StartCoroutine(ChangeTimeGradually(_newTime, _timeTransitionDurationSec));
 		}
 		else {
-			StartCoroutine(ChangeTimeTemporarily(_timeChange, _timeChangeDurationSec, _timeTransitionDurationSec));
+			StartCoroutine(ChangeTimeTemporarily(_newTime, _newTimeDurationSec, _timeTransitionDurationSec));
 		}
 	}
 
-	private IEnumerator ChangeTimeTemporarily(float timeChange, float timeChangeDurationSec, float timeTransitionDurationSec = 1.0f) {
-		yield return ChangeTimeGradually(timeChange, timeTransitionDurationSec);
-		yield return new WaitForSeconds(timeChangeDurationSec);
+	private IEnumerator ChangeTimeTemporarily(float newTime, float timeChangeDurationSec, float timeTransitionDurationSec = 1.0f) {
+		yield return ChangeTimeGradually(newTime, timeTransitionDurationSec);
+		yield return new WaitForSecondsRealtime(timeChangeDurationSec);
 		yield return ChangeTimeGradually(_startTimeScale, timeTransitionDurationSec);
 	}
 
-	private IEnumerator ChangeTimeUntilInput(float timeChange, bool input, float timeTransitionDurationSec = 1.0f) {
-		yield return ChangeTimeGradually(timeChange, timeTransitionDurationSec);
+	private IEnumerator ChangeTimeUntilInput(float newTime, bool input, float timeTransitionDurationSec = 1.0f) {
+		yield return ChangeTimeGradually(newTime, timeTransitionDurationSec);
 		yield return new WaitUntil(() => input);
 		yield return ChangeTimeGradually(_startTimeScale, timeTransitionDurationSec);
 	}
 
-	private IEnumerator ChangeTimeGradually(float timeChange, float timeTransitionDurationSec = 1.0f) {
+	private IEnumerator ChangeTimeGradually(float newTime, float timeTransitionDurationSec = 1.0f) {
 		float startTimeScale = Time.timeScale;
-		float targetTimeScale = startTimeScale * timeChange;
+		float targetTimeScale = newTime;
 		float elapsedTime = 0.0f;
 
 		while (elapsedTime < timeTransitionDurationSec) {
@@ -58,6 +63,8 @@ public class TimeChanger : Interactable {
 
 			yield return null;
 		}
+
+		Time.timeScale = targetTimeScale;
 	}
 
 }
