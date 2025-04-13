@@ -5,11 +5,16 @@ using System;
 [Flags]
 public enum PlayerState {
 	WallGliding = 1 << 0,
-
+	OnInputGoalMinigame = 1 << 1,
 }
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData", order = 1)]
 public class PlayerData : ScriptableObject {
+	public PlayerState State;
+	public void AddState(PlayerState state) => State |= state;
+	public void RemoveState(PlayerState state) => State &= ~state;
+	public bool HasState(PlayerState state) => (State & state) == state;
+
 	/// <summary>
 	/// Normalized Spline Position.
 	/// `0.0f` = spline start, `1.0f` = spline end.
@@ -37,7 +42,7 @@ public class PlayerData : ScriptableObject {
 			if (isDifferentValue) {
 				float oldSpeed = _speed;
 
-				_speed = value;
+				_speed = max(0.0f, value);
 				Events.OnSpeedChanged?.Invoke(_speed, oldSpeed);
 				Debug.Log($"Speed changed from {oldSpeed} to {_speed}");
 			}
@@ -51,6 +56,8 @@ public class PlayerData : ScriptableObject {
 		public bool Enabled;
 		public bool IsMainInputHeld;
 		public bool InteractWasPressedThisFrame;
+
+		public Action OnInteractPressed;
 	}
 
 	public struct EventData {

@@ -26,5 +26,9 @@ public class PlayerInput : MonoBehaviour {
 
 		_player.Input.IsMainInputHeld = _flyKeys.Any(key => Input.GetKey(key));
 		_player.Input.InteractWasPressedThisFrame = _interactKeys.Any(key => Input.GetKeyDown(key));
+
+		if (_player.Input.InteractWasPressedThisFrame) {
+			_player.Input.OnInteractPressed?.Invoke();
+		}
 	}
 }

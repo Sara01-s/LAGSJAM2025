@@ -10,10 +10,12 @@ public class CameraMovement : MonoBehaviour {
 
 	private void OnEnable() {
 		_player.Events.OnSpeedChanged += ChangeOrtographicSize;
+		_player.Input.OnInteractPressed += TryShakeCamera;
 	}
 
 	private void OnDisable() {
 		_player.Events.OnSpeedChanged -= ChangeOrtographicSize;
+		_player.Input.OnInteractPressed -= TryShakeCamera;
 	}
 
 	private void Update() {
@@ -46,5 +48,35 @@ public class CameraMovement : MonoBehaviour {
 		}
 
 		_camera.Lens.OrthographicSize = targetOrtographicSize;
+	}
+
+	private void TryShakeCamera() {
+		const float intensity = 0.1f;
+		const float duration = 0.2f;
+
+		if (_player.HasState(PlayerState.OnInputGoalMinigame)) {
+			StartCoroutine(ChangeCameraOrtographicSizeGradually(_camera.Lens.OrthographicSize - 0.5f));
+			ShakeCamera(intensity, duration);
+		}
+	}
+
+	private void ShakeCamera(float intensity, float duration) {
+		StartCoroutine(_ShakeCamera(intensity, duration));
+
+		IEnumerator _ShakeCamera(float intensity, float duration) {
+			Vector3 originalPosition = _camera.transform.localPosition;
+			float elapsed = 0.0f;
+
+			while (elapsed < duration) {
+				Vector2 randomOffset = Random.insideUnitCircle * intensity;
+
+				_camera.transform.localPosition = new Vector3(randomOffset.x, randomOffset.y, originalPosition.z);
+
+				elapsed += Time.deltaTime;
+				yield return null;
+			}
+
+			_camera.transform.localPosition = originalPosition;
+		}
 	}
 }

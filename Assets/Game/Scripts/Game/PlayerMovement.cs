@@ -17,6 +17,15 @@ public class PlayerMovement : MonoBehaviour {
 	private float _fallVelocity = 0.0f;
 
 	private void Awake() {
+		// Validar referencias
+		if (_floor == null || _ceil == null) {
+			Debug.LogError("Floor o Ceil no asignados en PlayerMovement!");
+		}
+
+		if (_splinePath == null || _splinePath.Spline == null) {
+			Debug.LogError("SplinePath no asignado o inválido en PlayerMovement!");
+		}
+
 		_player.IsFrozen = false;
 		_player.Speed = _player.StartSpeed;
 		_player.LastCheckpointNsp = 0.0f;
@@ -24,6 +33,11 @@ public class PlayerMovement : MonoBehaviour {
 		_body = GetComponent<Rigidbody2D>();
 		_body.gravityScale = 0.0f;
 		_splineLength = _splinePath.Spline.GetLength();
+
+		// Inicializar _normalOffset en el centro del rango permitido
+		if (_floor != null && _ceil != null) {
+			_normalOffset = (_floor.localPosition.y + _ceil.localPosition.y) * 0.5f;
+		}
 	}
 
 	private void OnEnable() {
@@ -48,17 +62,20 @@ public class PlayerMovement : MonoBehaviour {
 			return;
 		}
 
-		_player.Nsp += (_player.Speed * Time.deltaTime) / _splineLength;
+		_player.Nsp += (_player.Speed * Time.fixedDeltaTime) / _splineLength;
 		_player.Nsp %= 1.0f;
 
 		Vector2 splinePos = _splinePath.Spline.EvaluatePosition(_player.Nsp).xy;
 		Vector2 splineNormal = _splinePath.Spline.EvaluateUpVector(_player.Nsp).xy;
 
+		float floorY = _floor.localPosition.y;
+		float ceilY = _ceil.localPosition.y;
+
 		_fallVelocity += _gravityDirection * _player.GravityScale * Time.fixedDeltaTime;
 		_normalOffset += _fallVelocity * Time.fixedDeltaTime;
-		_normalOffset = clamp(_normalOffset, _floor.localPosition.y, _ceil.localPosition.y);
+		_normalOffset = clamp(_normalOffset, floorY, ceilY);
 
-		if (_normalOffset <= _floor.localPosition.y || _normalOffset >= _ceil.localPosition.y) {
+		if (abs(_normalOffset - floorY) < 0.001f || abs(_normalOffset - ceilY) < 0.001f) {
 			_fallVelocity = 0.0f;
 		}
 
